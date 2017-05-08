@@ -1,3 +1,3 @@
-C:/BVK/Kassenzettel/app/.externalNativeBuild/cmake/release/x86/CMakeFiles/native-lib.dir
-C:/BVK/Kassenzettel/app/.externalNativeBuild/cmake/release/x86/CMakeFiles/edit_cache.dir
-C:/BVK/Kassenzettel/app/.externalNativeBuild/cmake/release/x86/CMakeFiles/rebuild_cache.dir
+C:/Uni/BVP-SS17/Kassenzettel/app/.externalNativeBuild/cmake/release/x86/CMakeFiles/native-lib.dir
+C:/Uni/BVP-SS17/Kassenzettel/app/.externalNativeBuild/cmake/release/x86/CMakeFiles/edit_cache.dir
+C:/Uni/BVP-SS17/Kassenzettel/app/.externalNativeBuild/cmake/release/x86/CMakeFiles/rebuild_cache.dir

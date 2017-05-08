@@ -24,6 +24,7 @@ import android.app.DialogFragment;
 import android.app.Fragment;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.graphics.ImageFormat;
@@ -43,6 +44,7 @@ import android.hardware.camera2.TotalCaptureResult;
 import android.hardware.camera2.params.StreamConfigurationMap;
 import android.media.Image;
 import android.media.ImageReader;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.HandlerThread;
@@ -846,14 +848,15 @@ public class CameraFragment extends Fragment
                     unlockFocus();
                     //showToast("Saved: " + mFile);
                         //TODO comment back in to work with the processing activity
-//                    Log.d(TAG, mFile.toString());
+                    Log.d(TAG, mFile.toString());
 
-//                    Uri uri = Uri.fromFile(mFile);
-//                    showToast(uri.toString());
-//                    Intent processIntent = new Intent(getActivity(), ProcessingActivity.class);
-//                    processIntent.putExtra("uri", uri.toString());
-//                    createFile();
-//                    startActivity(processIntent);
+                    Uri uri;
+                    uri = Uri.fromFile(mFile);
+                    showToast(uri.toString());
+                    Intent processIntent = new Intent(getActivity(), ProcessingActivity.class);
+                    processIntent.putExtra("uri", uri.toString());
+                    createFile();
+                    startActivity(processIntent);
                 }
             };
 
