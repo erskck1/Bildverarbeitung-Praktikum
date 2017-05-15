@@ -56,8 +56,8 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void onSelectFromGalleryResult(Intent data) {
-        Intent intent = new Intent(getApplicationContext(), ImageViewActivity.class);
-        intent.putExtra("imageUri", data.getData().toString());
+        Intent intent = new Intent(getApplicationContext(), ProcessingActivity.class);
+        intent.putExtra(CameraFragment.IMAGE_URI, data.getData().toString());
         startActivity(intent);
     }
 

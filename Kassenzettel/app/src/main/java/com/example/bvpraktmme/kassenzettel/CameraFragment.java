@@ -78,6 +78,7 @@ import java.util.concurrent.TimeUnit;
 public class CameraFragment extends Fragment
         implements View.OnClickListener, FragmentCompat.OnRequestPermissionsResultCallback {
 
+    public static String IMAGE_URI = "image_uri_key";
     /**
      * Conversion from screen rotation to JPEG orientation.
      */
@@ -854,7 +855,7 @@ public class CameraFragment extends Fragment
                     uri = Uri.fromFile(mFile);
                     showToast(uri.toString());
                     Intent processIntent = new Intent(getActivity(), ProcessingActivity.class);
-                    processIntent.putExtra("uri", uri.toString());
+                    processIntent.putExtra(IMAGE_URI, uri.toString());
                     createFile();
                     startActivity(processIntent);
                 }
