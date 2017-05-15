@@ -25,7 +25,7 @@ public class ImageViewActivity extends AppCompatActivity {
         if (extras != null && extras.containsKey("imageUri")) {
              imageUri= Uri.parse(extras.getString("imageUri"));
         }
-
+        // test push
         Bitmap bm = null;
         if (imageUri != null) {
             try {
