@@ -19,6 +19,7 @@ public class ProcessingActivity extends AppCompatActivity {
         //Menu Insertion
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         Log.d("call", "acit");
 

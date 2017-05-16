@@ -22,6 +22,10 @@ public class MainActivity extends AppCompatActivity {
         //Menu Insertion
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+        // Display icon in the toolbar
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
+        getSupportActionBar().setLogo(R.mipmap.ic_launcher);
+        getSupportActionBar().setDisplayUseLogoEnabled(true);
 
 
         Button takePictureButton = (Button) findViewById(R.id.take_picture);

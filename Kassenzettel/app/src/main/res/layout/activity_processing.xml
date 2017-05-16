@@ -4,9 +4,15 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="wrap_content"
     android:layout_height="match_parent"
-    tools:context="com.example.bvpraktmme.kassenzettel.ProcessingActivity">
+    tools:context="com.example.bvpraktmme.kassenzettel.ProcessingActivity"
+    android:fitsSystemWindows="true">
 
-    <include layout="@layout/toolbar"></include>
+    <include
+        layout="@layout/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+    </include>
 
     <ImageView
         android:layout_width="wrap_content"
