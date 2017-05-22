@@ -2,15 +2,16 @@ package com.example.bvpraktmme.kassenzettel;
 
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
+import android.view.View;
 import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
 
 public class ProcessingActivity extends AppCompatActivity {
-
+    private static final String TAG = "ProcessingActivity";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
@@ -21,7 +22,14 @@ public class ProcessingActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        Log.d("call", "acit");
+        //Floating Action Button
+        FloatingActionButton processingButton = (FloatingActionButton) findViewById(R.id.floatingActionButton);
+        processingButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //Here Code
+            }
+        });
 
         Bundle extras = getIntent().getExtras();
         Uri imageUri = null;
