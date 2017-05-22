@@ -15,6 +15,7 @@ android {
                 cppFlags ""
             }
         }
+
     }
     buildTypes {
         release {
