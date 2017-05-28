@@ -20,4 +20,8 @@ public class FilterUtils {
     public static Mat getMatBy(final Bitmap image) {
         return new Mat (image.getWidth(), image.getHeight(), CvType.CV_8UC1);
     }
+
+    public static void threshold(final Mat image, Mat convertedImage) {
+        Imgproc.threshold(image, convertedImage, 0, 255, Imgproc.THRESH_OTSU);
+    }
 }

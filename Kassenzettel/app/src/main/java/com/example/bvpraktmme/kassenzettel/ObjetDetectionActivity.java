@@ -85,6 +85,7 @@ public class ObjetDetectionActivity extends AppCompatActivity {
 
         ImageView imageView = (ImageView) findViewById(R.id.display_image);
         Glide.with(this).loadFromMediaStore(Uri.parse(path)).into(imageView);
+        
     }
 
     @Override
