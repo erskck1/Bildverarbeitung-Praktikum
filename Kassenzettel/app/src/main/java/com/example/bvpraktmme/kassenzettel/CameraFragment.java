@@ -853,7 +853,6 @@ public class CameraFragment extends Fragment
 
                     Uri uri;
                     uri = Uri.fromFile(mFile);
-                    showToast(uri.toString());
                     Intent processIntent = new Intent(getActivity(), ProcessingActivity.class);
                     processIntent.putExtra(IMAGE_URI, uri.toString());
                     createFile();

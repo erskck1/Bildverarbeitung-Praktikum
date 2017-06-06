@@ -8,6 +8,7 @@ import org.opencv.core.Mat;
 import org.opencv.core.MatOfPoint;
 import org.opencv.core.MatOfPoint2f;
 import org.opencv.core.Point;
+import org.opencv.core.Rect;
 import org.opencv.core.RotatedRect;
 import org.opencv.core.Scalar;
 import org.opencv.core.Size;
@@ -76,28 +77,39 @@ public class ObjectRecognizer {
         }
 
         Imgproc.drawContours(imageAsMat, contours, -1, new Scalar(0, 0, 255), 10);
+        RotatedRect biggestRect = rotatedRects.get(0);
 
         for(RotatedRect rect : rotatedRects) {
             double angle = rect.angle;
             Size size = rect.size;
-
+            //TODO Rotation is inverse of what it should be, rotating the wrong way?
             if (angle < -45) {
                 angle += 90.0;
                 double temp = size.height;
                 size.height = size.width;
                 size.width = temp;
             }
+            // Find the biggest rectangle, most likely the bill
+            if(rect.size.height * rect.size.width >= biggestRect.size.height * rect.size.width){
+                biggestRect = rect;
+            }
 
-            Mat transform = Imgproc.getRotationMatrix2D(rect.center, angle, 1.0);
-            Mat rotated = new Mat();
-            Imgproc.warpAffine(dilated, rotated, transform, dilated.size(), Imgproc.INTER_CUBIC);
+            //Mat transform = Imgproc.getRotationMatrix2D(rect.center, angle, 1.0);
+            //Mat rotated = new Mat();
+            //Imgproc.warpAffine(dilated, rotated, transform, dilated.size(), Imgproc.INTER_CUBIC);
         }
-        //Mat cropped = new Mat();
-        //Imgproc.getRectSubPix(rotated, size, rect.center, cropped);
+        //Transform according to the largest found rectangle
+        Mat transform = Imgproc.getRotationMatrix2D(biggestRect.center, biggestRect.angle, 1.0);
+        Mat rotated = new Mat();
+        Imgproc.warpAffine(imageAsMat, rotated, transform, imageAsMat.size(), Imgproc.INTER_CUBIC);
+        //TODO Crop with image inside, why is it blank?
+        Rect boundingRect = biggestRect.boundingRect();
+        Mat cropped = new Mat(rotated, boundingRect);
+        //Imgproc.getRectSubPix(dilated, biggestRect.size, biggestRect.center, cropped);
         //Core.copyMakeBorder(cropped, cropped, 10,10,10,10,Core.BORDER_CONSTANT, new Scalar(0));
-
-        Bitmap bm = Bitmap.createBitmap(imageAsMat.cols(), imageAsMat.rows(),Bitmap.Config.ARGB_8888);
-        Utils.matToBitmap(imageAsMat, bm);
+        //TODO Scale down bitmap with opencv or glide?
+        Bitmap bm = Bitmap.createBitmap(cropped.cols(), cropped.rows(),Bitmap.Config.ARGB_8888);
+        Utils.matToBitmap(cropped, bm);
         return bm;
     }
 }
