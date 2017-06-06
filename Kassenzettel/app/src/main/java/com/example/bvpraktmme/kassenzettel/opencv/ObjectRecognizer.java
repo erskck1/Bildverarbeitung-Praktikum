@@ -47,7 +47,7 @@ public class ObjectRecognizer {
             Core.bitwise_not(convertedImage, convertedImage);
         }
 
-        Mat kernel = Imgproc.getStructuringElement(Imgproc.MORPH_CROSS, new Size(15,15));
+        Mat kernel = Imgproc.getStructuringElement(Imgproc.MORPH_CROSS, new Size(15,5));
 
         Mat dilated = new Mat();
 
@@ -65,9 +65,6 @@ public class ObjectRecognizer {
             RotatedRect rotatedRect = Imgproc.minAreaRect(matOfPoint2f);
             rotatedRects.add(rotatedRect);
         }
-
-        Imgproc.drawContours(imageAsMat, contours, -1, new Scalar(0, 0, 255), 10);
-
         RotatedRect biggestRect = null;
 
         if(rotatedRects.isEmpty()) {
@@ -98,7 +95,8 @@ public class ObjectRecognizer {
             Imgproc.warpAffine(convertedImage2, rotated, transform, convertedImage2.size(), Imgproc.INTER_CUBIC);
 
         Mat cropped = new Mat();
-        Imgproc.getRectSubPix(rotated, size, biggestRect.center, cropped);
+        Size newS = new Size(size.width-175, size.height-175);
+        Imgproc.getRectSubPix(rotated, newS, biggestRect.center, cropped);
         Core.copyMakeBorder(cropped, cropped, 10,10,10,10,Core.BORDER_CONSTANT, new Scalar(0));
 
         Bitmap bm = Bitmap.createBitmap(cropped.cols(), cropped.rows(),Bitmap.Config.ARGB_8888);
