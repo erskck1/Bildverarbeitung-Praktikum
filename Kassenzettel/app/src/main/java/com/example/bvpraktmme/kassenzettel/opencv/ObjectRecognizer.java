@@ -8,7 +8,6 @@ import org.opencv.core.Mat;
 import org.opencv.core.MatOfPoint;
 import org.opencv.core.MatOfPoint2f;
 import org.opencv.core.Point;
-import org.opencv.core.Rect;
 import org.opencv.core.RotatedRect;
 import org.opencv.core.Scalar;
 import org.opencv.core.Size;
@@ -21,7 +20,7 @@ public class ObjectRecognizer {
 
     private Mat imageAsMat;
     private Mat convertedImage;
-
+    private Mat convertedImage2;
     private Bitmap image;
 
     public void setImage(Bitmap image) {
@@ -31,11 +30,13 @@ public class ObjectRecognizer {
     public Bitmap applyFilters() {
 
         convertedImage = FilterUtils.getMatBy(image);
+        convertedImage2 = FilterUtils.getMatBy(image);
         imageAsMat = FilterUtils.getMatBy(image);
 
         Utils.bitmapToMat(image, imageAsMat);
 
         FilterUtils.greyscaleFilter(imageAsMat, convertedImage);
+        FilterUtils.threshold(convertedImage, convertedImage2);
         FilterUtils.guassianBlur(convertedImage, convertedImage, new Size(15,15), 0);
         FilterUtils.threshold(convertedImage, convertedImage);
 
@@ -62,52 +63,44 @@ public class ObjectRecognizer {
         for (MatOfPoint contour : contours) {
             MatOfPoint2f matOfPoint2f = new MatOfPoint2f(contour.toArray());
             RotatedRect rotatedRect = Imgproc.minAreaRect(matOfPoint2f);
-
-            if(rotatedRect.size.width < 20 || rotatedRect.size.height < 20) {
-                continue;
-            }
-
-            double proportion = rotatedRect.angle <-45.0 ? rotatedRect.size.height/rotatedRect.size.width : rotatedRect.size.width/rotatedRect.size.height;
-
-            if(proportion<2) {
-                continue;
-            }
-
             rotatedRects.add(rotatedRect);
         }
 
         Imgproc.drawContours(imageAsMat, contours, -1, new Scalar(0, 0, 255), 10);
-        RotatedRect biggestRect = rotatedRects.get(0);
 
-        for(RotatedRect rect : rotatedRects) {
-            double angle = rect.angle;
-            Size size = rect.size;
-            //TODO Rotation is inverse of what it should be, rotating the wrong way?
+        RotatedRect biggestRect = null;
+
+        if(rotatedRects.isEmpty()) {
+
+        } else {
+
+            biggestRect = new RotatedRect();
+            for(RotatedRect rect : rotatedRects) {
+                if(biggestRect.size.width*biggestRect.size.height < rect.size.height*rect.size.width) {
+                    biggestRect = rect;
+                }
+            }
+        }
+
+
+        double angle = biggestRect.angle;
+        Size size = biggestRect.size;
+
             if (angle < -45) {
                 angle += 90.0;
                 double temp = size.height;
                 size.height = size.width;
                 size.width = temp;
             }
-            // Find the biggest rectangle, most likely the bill
-            if(rect.size.height * rect.size.width >= biggestRect.size.height * rect.size.width){
-                biggestRect = rect;
-            }
 
-            //Mat transform = Imgproc.getRotationMatrix2D(rect.center, angle, 1.0);
-            //Mat rotated = new Mat();
-            //Imgproc.warpAffine(dilated, rotated, transform, dilated.size(), Imgproc.INTER_CUBIC);
-        }
-        //Transform according to the largest found rectangle
-        Mat transform = Imgproc.getRotationMatrix2D(biggestRect.center, biggestRect.angle, 1.0);
-        Mat rotated = new Mat();
-        Imgproc.warpAffine(imageAsMat, rotated, transform, imageAsMat.size(), Imgproc.INTER_CUBIC);
-        //TODO Crop with image inside, why is it blank?
-        Rect boundingRect = biggestRect.boundingRect();
-        Mat cropped = new Mat(rotated, boundingRect);
-        //Imgproc.getRectSubPix(dilated, biggestRect.size, biggestRect.center, cropped);
-        //Core.copyMakeBorder(cropped, cropped, 10,10,10,10,Core.BORDER_CONSTANT, new Scalar(0));
-        //TODO Scale down bitmap with opencv or glide?
+            Mat transform = Imgproc.getRotationMatrix2D(biggestRect.center, angle, 1.0);
+            Mat rotated = new Mat();
+            Imgproc.warpAffine(convertedImage2, rotated, transform, convertedImage2.size(), Imgproc.INTER_CUBIC);
+
+        Mat cropped = new Mat();
+        Imgproc.getRectSubPix(rotated, size, biggestRect.center, cropped);
+        Core.copyMakeBorder(cropped, cropped, 10,10,10,10,Core.BORDER_CONSTANT, new Scalar(0));
+
         Bitmap bm = Bitmap.createBitmap(cropped.cols(), cropped.rows(),Bitmap.Config.ARGB_8888);
         Utils.matToBitmap(cropped, bm);
         return bm;
