@@ -103,4 +103,20 @@ public class ObjectRecognizer {
         Utils.matToBitmap(cropped, bm);
         return bm;
     }
+
+    /**
+     * Method to find and cut out the area of the bill where items and prices area displayed
+     * @return
+     */
+    public Bitmap findPriceArea(){
+        Bitmap bm =  Bitmap.createBitmap(1,1,Bitmap.Config.ARGB_8888);
+        //Transform the image into a mat
+        Mat baseMat = FilterUtils.getMatBy(image);
+        Utils.bitmapToMat(image, baseMat);
+
+
+
+
+        return bm;
+    }
 }

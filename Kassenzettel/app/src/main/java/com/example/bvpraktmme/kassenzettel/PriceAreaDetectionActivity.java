@@ -1,39 +1,31 @@
 package com.example.bvpraktmme.kassenzettel;
 
-
+import android.support.v7.app.AppCompatActivity;
+import android.os.Bundle;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.net.Uri;
-import android.os.Bundle;
 
 import android.provider.MediaStore;
 
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 
-import android.util.Log;
 import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
 import com.example.bvpraktmme.kassenzettel.opencv.ObjectRecognizer;
 import com.example.bvpraktmme.kassenzettel.permission.PermissionOrganizer;
 
-import org.opencv.android.OpenCVLoader;
-
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 
-public class ObjetDetectionActivity extends AppCompatActivity {
-
-    static {
-        System.loadLibrary("opencv_java3");
-    }
-
+public class PriceAreaDetectionActivity extends AppCompatActivity {
     private ObjectRecognizer recognizer;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        recognizer = new ObjectRecognizer();
 
         setContentView(R.layout.activity_processing);
 
@@ -41,19 +33,10 @@ public class ObjetDetectionActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        if(!OpenCVLoader.initDebug()) {
-            Log.d("ERROR", "Unable to load OpenCV");
-        } else {
-            Log.d("SUCCESS", "OpenCV loaded");
-            recognizer = new ObjectRecognizer();
-
-
-        }
-
         Bundle extras = getIntent().getExtras();
 
-        if (extras != null && extras.containsKey(CameraFragment.IMAGE_URI)) {
-            String filepath = extras.getString(CameraFragment.IMAGE_URI);
+        if (extras != null && extras.containsKey(ObjectDetectionActivity.CONVERTED_URI_KEY)) {
+            String filepath = extras.getString(ObjectDetectionActivity.CONVERTED_URI_KEY);
 
             Bitmap bm = null;
 
@@ -68,26 +51,13 @@ public class ObjetDetectionActivity extends AppCompatActivity {
             }
 
             recognizer.setImage(bm);
-            boolean permission = PermissionOrganizer.checkPermission(ObjetDetectionActivity.this);
+            boolean permission = PermissionOrganizer.checkPermission(PriceAreaDetectionActivity.this);
 
             if(permission) {
                 showConvertedPicture();
             }
         }
     }
-
-    public void showConvertedPicture() {
-        Bitmap inImage = recognizer.applyFilters();
-
-        ByteArrayOutputStream bytes = new ByteArrayOutputStream();
-        inImage.compress(Bitmap.CompressFormat.JPEG, 100, bytes);
-        String path = MediaStore.Images.Media.insertImage(getApplicationContext().getContentResolver(), inImage, "Title", null);
-
-        ImageView imageView = (ImageView) findViewById(R.id.display_image);
-        Glide.with(this).loadFromMediaStore(Uri.parse(path)).into(imageView);
-        
-    }
-
     @Override
     public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
         switch (requestCode) {
@@ -100,6 +70,24 @@ public class ObjetDetectionActivity extends AppCompatActivity {
                 break;
         }
     }
+
+    /**
+     * Method applying imageprocessing defined in ObjectRecognizer to find the the Area with the prices
+     * and save it and display it in the Imageview
+     */
+    public void showConvertedPicture() {
+        //TODO change to new Method for finding the price area
+        Bitmap inImage = recognizer.findPriceArea();
+
+        ByteArrayOutputStream bytes = new ByteArrayOutputStream();
+        inImage.compress(Bitmap.CompressFormat.JPEG, 100, bytes);
+        String path = MediaStore.Images.Media.insertImage(getApplicationContext().getContentResolver(), inImage, "Title", null);
+
+        ImageView imageView = (ImageView) findViewById(R.id.display_image);
+        Glide.with(this).loadFromMediaStore(Uri.parse(path)).into(imageView);
+
+    }
+
 
 
 }
