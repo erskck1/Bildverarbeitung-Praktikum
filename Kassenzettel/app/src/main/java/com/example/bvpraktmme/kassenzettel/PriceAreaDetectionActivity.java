@@ -76,10 +76,12 @@ public class PriceAreaDetectionActivity extends AppCompatActivity {
      * and save it and display it in the Imageview
      */
     public void showConvertedPicture() {
-        //TODO change to new Method for finding the price area
         Bitmap inImage = recognizer.findPriceArea();
 
         ByteArrayOutputStream bytes = new ByteArrayOutputStream();
+
+        //TODO dont save the image on disk, store it only in memory
+
         inImage.compress(Bitmap.CompressFormat.JPEG, 100, bytes);
         String path = MediaStore.Images.Media.insertImage(getApplicationContext().getContentResolver(), inImage, "Title", null);
 

@@ -5,6 +5,7 @@ import android.graphics.Bitmap;
 import org.opencv.android.Utils;
 import org.opencv.core.Core;
 import org.opencv.core.Mat;
+import org.opencv.core.MatOfInt4;
 import org.opencv.core.MatOfPoint;
 import org.opencv.core.MatOfPoint2f;
 import org.opencv.core.Point;
@@ -15,6 +16,7 @@ import org.opencv.imgproc.Imgproc;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Filter;
 
 public class ObjectRecognizer {
 
@@ -109,13 +111,38 @@ public class ObjectRecognizer {
      * @return
      */
     public Bitmap findPriceArea(){
-        Bitmap bm =  Bitmap.createBitmap(1,1,Bitmap.Config.ARGB_8888);
         //Transform the image into a mat
         Mat baseMat = FilterUtils.getMatBy(image);
         Utils.bitmapToMat(image, baseMat);
+        Mat convertedImage = new Mat();
 
+        //Conversion to greyscale then binary
+        FilterUtils.greyscaleFilter(baseMat, convertedImage);
+        FilterUtils.threshold(convertedImage, convertedImage);
+        //TODO use hough lines with canny edge detector
+        Mat lines = new Mat();
+        Mat canny = new Mat();
+        //Find edges then find the lines
+        Imgproc.Canny(convertedImage, canny, 50, 200);
+        //Set the parameters for which lines to detect
+        Imgproc.HoughLinesP(canny, lines,1, Math.PI/180,50,300,20 );
+        //Draw the lines onto the picture
+        for (int i = 0; i < lines.rows() ; i++) {
+            double[] vec = lines.get(i, 0);
+            double x1 = vec[0],
+                    y1 = vec[1],
+                    x2 = vec[2],
+                    y2 = vec[3];
+            Point start = new Point(x1, y1);
+            Point end = new Point(x2, y2);
 
+            Imgproc.line(convertedImage, start, end, new Scalar(0,255, 0, 255),5);
 
+        }
+        //TODO find the first line or two lines close to each other and cut the picture accordingly
+
+        Bitmap bm = Bitmap.createBitmap(convertedImage.cols(), convertedImage.rows(),Bitmap.Config.ARGB_8888);
+        Utils.matToBitmap(convertedImage, bm);
 
         return bm;
     }

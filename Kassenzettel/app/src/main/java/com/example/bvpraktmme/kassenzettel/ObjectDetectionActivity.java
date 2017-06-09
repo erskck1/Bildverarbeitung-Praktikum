@@ -106,6 +106,9 @@ public class ObjectDetectionActivity extends AppCompatActivity {
 
         ByteArrayOutputStream bytes = new ByteArrayOutputStream();
         inImage.compress(Bitmap.CompressFormat.JPEG, 100, bytes);
+
+        //TODO dont save the image on disk, store it only in memory
+
         String path = MediaStore.Images.Media.insertImage(getApplicationContext().getContentResolver(), inImage, "Title", null);
         convertedUri = path;
 
