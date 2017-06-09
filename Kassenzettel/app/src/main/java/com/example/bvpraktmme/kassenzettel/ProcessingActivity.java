@@ -38,7 +38,7 @@ public class ProcessingActivity extends AppCompatActivity {
             processingButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Intent objectDetectionIntent = new Intent(getApplicationContext(), ObjetDetectionActivity.class);
+                    Intent objectDetectionIntent = new Intent(getApplicationContext(), ObjectDetectionActivity.class);
                     objectDetectionIntent.putExtra(CameraFragment.IMAGE_URI, imageUri.toString());
                     startActivity(objectDetectionIntent);
                 }
