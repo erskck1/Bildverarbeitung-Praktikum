@@ -1,6 +1,7 @@
 package com.example.bvpraktmme.kassenzettel.opencv;
 
 import android.graphics.Bitmap;
+import android.util.Log;
 
 import org.opencv.android.Utils;
 import org.opencv.core.Core;
@@ -15,6 +16,7 @@ import org.opencv.core.Size;
 import org.opencv.imgproc.Imgproc;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.logging.Filter;
 
@@ -119,31 +121,45 @@ public class ObjectRecognizer {
         //Conversion to greyscale then binary
         FilterUtils.greyscaleFilter(baseMat, convertedImage);
         FilterUtils.threshold(convertedImage, convertedImage);
-        //TODO use hough lines with canny edge detector
         Mat lines = new Mat();
         Mat canny = new Mat();
         //Find edges then find the lines
         Imgproc.Canny(convertedImage, canny, 50, 200);
         //Set the parameters for which lines to detect
-        Imgproc.HoughLinesP(canny, lines,1, Math.PI/180,50,300,20 );
-        //Draw the lines onto the picture
-        for (int i = 0; i < lines.rows() ; i++) {
-            double[] vec = lines.get(i, 0);
-            double x1 = vec[0],
-                    y1 = vec[1],
-                    x2 = vec[2],
-                    y2 = vec[3];
-            Point start = new Point(x1, y1);
-            Point end = new Point(x2, y2);
+        Imgproc.HoughLinesP(canny, lines,1, Math.PI/180,50,600,30 );
 
-            Imgproc.line(convertedImage, start, end, new Scalar(0,255, 0, 255),5);
+        //Crop the image
+        //Specify the size to crop, width is the same as original height goes up until the found line
+        double firstDoubleLine = findFirstDoubleLine(lines);
+        Size cropSize = new Size(convertedImage.size().width + 20, firstDoubleLine );
+        //Create mat to crop into
+        Mat cropped = new Mat();
+        //Calculate the center , half the width and half the length of first line
+        Point center = new Point(convertedImage.size().width/2, firstDoubleLine/2);
+        Imgproc.getRectSubPix(convertedImage, cropSize, center, cropped );
 
-        }
-        //TODO find the first line or two lines close to each other and cut the picture accordingly
 
-        Bitmap bm = Bitmap.createBitmap(convertedImage.cols(), convertedImage.rows(),Bitmap.Config.ARGB_8888);
-        Utils.matToBitmap(convertedImage, bm);
+        Bitmap bm = Bitmap.createBitmap(cropped.cols(), cropped.rows(),Bitmap.Config.ARGB_8888);
+        Utils.matToBitmap(cropped, bm);
 
         return bm;
+    }
+    private double findFirstDoubleLine(Mat lines){
+        ArrayList<Double> yCoords = new ArrayList<>();
+        for (int i = 0; i < lines.rows() - 1; i++) {
+            double[] vec = lines.get(i, 0);
+            double [] vec2 = lines.get(i+1, 0);
+            double y1 = vec[1];
+            double y2 = vec2[1];
+
+
+            if(Math.abs(y1 - y2) < 5){
+                yCoords.add(Math.min(y1, y2));
+            }
+
+
+        }
+
+        return Collections.min(yCoords);
     }
 }
