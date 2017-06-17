@@ -1,5 +1,7 @@
 package com.example.bvpraktmme.kassenzettel;
 
+import android.content.Intent;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.content.pm.PackageManager;
@@ -10,6 +12,8 @@ import android.provider.MediaStore;
 
 import android.support.v7.widget.Toolbar;
 
+import android.view.MenuItem;
+import android.view.View;
 import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
@@ -21,6 +25,8 @@ import java.io.IOException;
 
 public class PriceAreaDetectionActivity extends AppCompatActivity {
     private ObjectRecognizer recognizer;
+    public static String FINAL_URI_KEY = "ocr_uri";
+    private String finalConvertedUri;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,15 +38,17 @@ public class PriceAreaDetectionActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
+        getSupportActionBar().setTitle("PriceAreaActivity");
 
         Bundle extras = getIntent().getExtras();
-
+        Uri imageUri = null;
         if (extras != null && extras.containsKey(ObjectDetectionActivity.CONVERTED_URI_KEY)) {
             String filepath = extras.getString(ObjectDetectionActivity.CONVERTED_URI_KEY);
 
             Bitmap bm = null;
 
-            Uri imageUri = Uri.parse(filepath);
+            imageUri = Uri.parse(filepath);
 
             if (imageUri != null) {
                 try {
@@ -57,6 +65,19 @@ public class PriceAreaDetectionActivity extends AppCompatActivity {
                 showConvertedPicture();
             }
         }
+
+        FloatingActionButton processingButton = (FloatingActionButton) findViewById(R.id.floatingActionButton);
+        processingButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(finalConvertedUri != null) {
+                    Intent ocrIntent = new Intent(getApplicationContext(), OcrActivity.class);
+
+                    ocrIntent.putExtra(PriceAreaDetectionActivity.FINAL_URI_KEY, finalConvertedUri);
+                    startActivity(ocrIntent);
+                }
+            }
+        });
     }
     @Override
     public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
@@ -84,12 +105,22 @@ public class PriceAreaDetectionActivity extends AppCompatActivity {
 
         inImage.compress(Bitmap.CompressFormat.JPEG, 100, bytes);
         String path = MediaStore.Images.Media.insertImage(getApplicationContext().getContentResolver(), inImage, "Title", null);
-
+        finalConvertedUri = path;
         ImageView imageView = (ImageView) findViewById(R.id.display_image);
         Glide.with(this).loadFromMediaStore(Uri.parse(path)).into(imageView);
 
     }
 
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                finish();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
 
 
 }

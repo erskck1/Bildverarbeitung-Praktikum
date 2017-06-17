@@ -6,14 +6,12 @@ import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
-
 import android.provider.MediaStore;
-
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-
 import android.util.Log;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
 
@@ -45,6 +43,8 @@ public class ObjectDetectionActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
+        getSupportActionBar().setTitle("ObjectDetectActivity");
 
         if(!OpenCVLoader.initDebug()) {
             Log.d("ERROR", "Unable to load OpenCV");
@@ -81,7 +81,7 @@ public class ObjectDetectionActivity extends AppCompatActivity {
 
 
             imageUri= Uri.parse(extras.getString(CameraFragment.IMAGE_URI));
-
+            //convertedUri = imageUri.toString();
 
             FloatingActionButton processingButton = (FloatingActionButton) findViewById(R.id.floatingActionButton);
             processingButton.setOnClickListener(new View.OnClickListener() {
@@ -127,6 +127,17 @@ public class ObjectDetectionActivity extends AppCompatActivity {
                     //code for deny
                 }
                 break;
+        }
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                finish();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
         }
     }
 
