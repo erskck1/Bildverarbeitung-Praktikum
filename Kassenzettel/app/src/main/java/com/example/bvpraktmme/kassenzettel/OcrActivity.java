@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.text.method.ScrollingMovementMethod;
 import android.view.MenuItem;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -58,8 +59,6 @@ public class OcrActivity extends AppCompatActivity {
             }
         }
 
-
-
         //Display processed image at top
         ImageView imageView = (ImageView) findViewById(R.id.ProcessedImageView);
         Glide.with(this).loadFromMediaStore(finalImageUri).into(imageView);
@@ -81,6 +80,7 @@ public class OcrActivity extends AppCompatActivity {
         mTess.setImage(image);
         OCResult = mTess.getUTF8Text();
         TextView OCRTextView = (TextView) findViewById(R.id.OCRTextView);
+        OCRTextView.setMovementMethod(new ScrollingMovementMethod());
         OCRTextView.setText(OCResult);
     }
 
