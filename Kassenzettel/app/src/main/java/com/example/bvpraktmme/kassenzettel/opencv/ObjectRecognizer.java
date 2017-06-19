@@ -1,12 +1,10 @@
 package com.example.bvpraktmme.kassenzettel.opencv;
 
 import android.graphics.Bitmap;
-import android.util.Log;
 
 import org.opencv.android.Utils;
 import org.opencv.core.Core;
 import org.opencv.core.Mat;
-import org.opencv.core.MatOfInt4;
 import org.opencv.core.MatOfPoint;
 import org.opencv.core.MatOfPoint2f;
 import org.opencv.core.Point;
@@ -18,7 +16,6 @@ import org.opencv.imgproc.Imgproc;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.logging.Filter;
 
 public class ObjectRecognizer {
 
@@ -39,6 +36,7 @@ public class ObjectRecognizer {
 
         Utils.bitmapToMat(image, imageAsMat);
 
+        // applying filters
         FilterUtils.greyscaleFilter(imageAsMat, convertedImage);
         FilterUtils.threshold(convertedImage, convertedImage2);
         FilterUtils.guassianBlur(convertedImage, convertedImage, new Size(15,15), 0);
@@ -67,6 +65,7 @@ public class ObjectRecognizer {
         for (MatOfPoint contour : contours) {
             MatOfPoint2f matOfPoint2f = new MatOfPoint2f(contour.toArray());
             RotatedRect rotatedRect = Imgproc.minAreaRect(matOfPoint2f);
+
             rotatedRects.add(rotatedRect);
         }
 
@@ -75,7 +74,6 @@ public class ObjectRecognizer {
         if(rotatedRects.isEmpty()) {
             // TODO if there are not any blob
         } else {
-
             // finding biggest blob
             biggestRect = new RotatedRect();
             for(RotatedRect rect : rotatedRects) {
@@ -129,7 +127,9 @@ public class ObjectRecognizer {
         //Find edges then find the lines
         Imgproc.Canny(convertedImage, canny, 50, 200);
         //Set the parameters for which lines to detect
-        Imgproc.HoughLinesP(canny, lines,1, Math.PI/180,50,500,30 );
+
+        double minLineLength = convertedImage.size().width/25;
+        Imgproc.HoughLinesP(canny, lines,1, Math.PI/180,50,500,minLineLength );
 
         //Crop the image
         //Specify the size to crop, width is the same as original height goes up until the found line
@@ -147,6 +147,7 @@ public class ObjectRecognizer {
 
         return bm;
     }
+
     private double findFirstDoubleLine(Mat lines){
         ArrayList<Double> yCoords = new ArrayList<>();
         for (int i = 0; i < lines.rows() - 1; i++) {
@@ -155,12 +156,9 @@ public class ObjectRecognizer {
             double y1 = vec[1];
             double y2 = vec2[1];
 
-
             if(Math.abs(y1 - y2) < 5){
                 yCoords.add(Math.min(y1, y2));
             }
-
-
         }
 
         return Collections.min(yCoords);

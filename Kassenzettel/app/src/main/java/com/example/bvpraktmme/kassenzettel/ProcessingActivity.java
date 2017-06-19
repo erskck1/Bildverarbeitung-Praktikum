@@ -33,7 +33,6 @@ public class ProcessingActivity extends AppCompatActivity {
         if (extras != null && extras.containsKey(CameraFragment.IMAGE_URI)) {
             imageUri= Uri.parse(extras.getString(CameraFragment.IMAGE_URI));
 
-
             FloatingActionButton processingButton = (FloatingActionButton) findViewById(R.id.floatingActionButton);
             processingButton.setOnClickListener(new View.OnClickListener() {
                 @Override
