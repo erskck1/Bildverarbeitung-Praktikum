@@ -51,8 +51,6 @@ public class ObjectDetectionActivity extends AppCompatActivity {
         } else {
             Log.d("SUCCESS", "OpenCV loaded");
             recognizer = new ObjectRecognizer();
-
-
         }
 
         Bundle extras = getIntent().getExtras();
@@ -124,6 +122,7 @@ public class ObjectDetectionActivity extends AppCompatActivity {
                 if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     showConvertedPicture();
                 } else {
+                    // TODO
                     //code for deny
                 }
                 break;

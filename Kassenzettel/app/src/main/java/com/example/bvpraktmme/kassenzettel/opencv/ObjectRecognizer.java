@@ -34,7 +34,7 @@ public class ObjectRecognizer {
     public Bitmap applyFilters() {
 
         convertedImage = FilterUtils.getMatBy(image);
-        convertedImage2 = FilterUtils.getMatBy(image);
+        convertedImage2 = FilterUtils.getMatBy(image); // need to show in presentation
         imageAsMat = FilterUtils.getMatBy(image);
 
         Utils.bitmapToMat(image, imageAsMat);
@@ -51,30 +51,32 @@ public class ObjectRecognizer {
             Core.bitwise_not(convertedImage, convertedImage);
         }
 
+        // preparation to find blobs
         Mat kernel = Imgproc.getStructuringElement(Imgproc.MORPH_CROSS, new Size(15,5));
-
         Mat dilated = new Mat();
-
         Imgproc.dilate(convertedImage, dilated, kernel, new Point(-1,-1), 5);
 
-
+        // the list of blobs
         List<MatOfPoint> contours = new ArrayList<>();
-
         Imgproc.findContours(dilated, contours, dilated.clone(), Imgproc.RETR_EXTERNAL, Imgproc.CHAIN_APPROX_SIMPLE);
 
         List<RotatedRect> rotatedRects = new ArrayList<>();
 
+        // preparation for rotation
+        // firstly change the type of blobs to RotatedRect object from MatOfPoint Object
         for (MatOfPoint contour : contours) {
             MatOfPoint2f matOfPoint2f = new MatOfPoint2f(contour.toArray());
             RotatedRect rotatedRect = Imgproc.minAreaRect(matOfPoint2f);
             rotatedRects.add(rotatedRect);
         }
+
+        // preparation to find biggest blob
         RotatedRect biggestRect = null;
-
         if(rotatedRects.isEmpty()) {
-
+            // TODO if there are not any blob
         } else {
 
+            // finding biggest blob
             biggestRect = new RotatedRect();
             for(RotatedRect rect : rotatedRects) {
                 if(biggestRect.size.width*biggestRect.size.height < rect.size.height*rect.size.width) {
@@ -83,20 +85,21 @@ public class ObjectRecognizer {
             }
         }
 
-
+        // Rotate the founded Kassenzettel
         double angle = biggestRect.angle;
         Size size = biggestRect.size;
 
-            if (angle < -45) {
-                angle += 90.0;
-                double temp = size.height;
-                size.height = size.width;
-                size.width = temp;
-            }
+        if (angle < -45) {
+            angle += 90.0;
+            double temp = size.height;
+            size.height = size.width;
+            size.width = temp;
+        }
 
-            Mat transform = Imgproc.getRotationMatrix2D(biggestRect.center, angle, 1.0);
-            Mat rotated = new Mat();
-            Imgproc.warpAffine(convertedImage2, rotated, transform, convertedImage2.size(), Imgproc.INTER_CUBIC);
+        // to show in presentation
+        Mat transform = Imgproc.getRotationMatrix2D(biggestRect.center, angle, 1.0);
+        Mat rotated = new Mat();
+        Imgproc.warpAffine(convertedImage2, rotated, transform, convertedImage2.size(), Imgproc.INTER_CUBIC);
 
         Mat cropped = new Mat();
         Size newS = new Size(size.width-175, size.height-175);
@@ -126,7 +129,7 @@ public class ObjectRecognizer {
         //Find edges then find the lines
         Imgproc.Canny(convertedImage, canny, 50, 200);
         //Set the parameters for which lines to detect
-        Imgproc.HoughLinesP(canny, lines,1, Math.PI/180,50,600,30 );
+        Imgproc.HoughLinesP(canny, lines,1, Math.PI/180,50,500,30 );
 
         //Crop the image
         //Specify the size to crop, width is the same as original height goes up until the found line
