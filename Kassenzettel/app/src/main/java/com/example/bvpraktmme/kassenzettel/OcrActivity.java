@@ -40,7 +40,6 @@ public class OcrActivity extends AppCompatActivity {
         getSupportActionBar().setTitle("OCR Activity");
 
 
-        //TODO Use Image instead of Hardcoded
         Bundle extras = getIntent().getExtras();
         Uri finalImageUri = null;
         if (extras != null && extras.containsKey(PriceAreaDetectionActivity.FINAL_URI_KEY)){
@@ -110,7 +109,6 @@ public class OcrActivity extends AppCompatActivity {
             while ((read = instream.read(buffer)) != -1) {
                 outstream.write(buffer, 0, read);
             }
-
 
             outstream.flush();
             outstream.close();

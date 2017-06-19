@@ -128,8 +128,8 @@ public class ObjectRecognizer {
         Imgproc.Canny(convertedImage, canny, 50, 200);
         //Set the parameters for which lines to detect
 
-        double minLineLength = convertedImage.size().width/25;
-        Imgproc.HoughLinesP(canny, lines,1, Math.PI/180,50,500,minLineLength );
+        double minLineLength = convertedImage.size().width*0.7;
+        Imgproc.HoughLinesP(canny, lines,1, Math.PI/180,50,minLineLength,30 );
 
         //Crop the image
         //Specify the size to crop, width is the same as original height goes up until the found line
