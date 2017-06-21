@@ -1,6 +1,7 @@
 package com.example.bvpraktmme.kassenzettel.opencv;
 
 import android.graphics.Bitmap;
+import android.util.Log;
 
 import org.opencv.android.Utils;
 import org.opencv.core.Core;
@@ -128,7 +129,8 @@ public class ObjectRecognizer {
         Imgproc.Canny(convertedImage, canny, 50, 200);
         //Set the parameters for which lines to detect
 
-        double minLineLength = convertedImage.size().width*0.7;
+        double minLineLength = convertedImage.size().width*0.6;
+        Log.d("line-length", String.valueOf(minLineLength));
         Imgproc.HoughLinesP(canny, lines,1, Math.PI/180,50,minLineLength,30 );
 
         //Crop the image
