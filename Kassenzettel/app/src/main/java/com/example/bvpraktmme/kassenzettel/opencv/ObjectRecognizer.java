@@ -66,7 +66,6 @@ public class ObjectRecognizer {
         for (MatOfPoint contour : contours) {
             MatOfPoint2f matOfPoint2f = new MatOfPoint2f(contour.toArray());
             RotatedRect rotatedRect = Imgproc.minAreaRect(matOfPoint2f);
-
             rotatedRects.add(rotatedRect);
         }
 
@@ -130,8 +129,8 @@ public class ObjectRecognizer {
         //Set the parameters for which lines to detect
 
         double minLineLength = convertedImage.size().width*0.6;
-        Log.d("line-length", String.valueOf(minLineLength));
-        Imgproc.HoughLinesP(canny, lines,1, Math.PI/180,50,minLineLength,30 );
+
+        Imgproc.HoughLinesP(canny, lines,1, Math.PI/180,50,minLineLength,50);
 
         //Crop the image
         //Specify the size to crop, width is the same as original height goes up until the found line
