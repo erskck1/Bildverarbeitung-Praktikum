@@ -128,13 +128,13 @@ public class ObjectRecognizer {
         Imgproc.Canny(convertedImage, canny, 50, 200);
         //Set the parameters for which lines to detect
 
-        double minLineLength = convertedImage.size().width*0.6;
+        double minLineLength = convertedImage.size().width*0.60;
 
-        Imgproc.HoughLinesP(canny, lines,1, Math.PI/180,50,minLineLength,50);
+        Imgproc.HoughLinesP(canny, lines,1, Math.PI/180,50,minLineLength,30);
 
         //Crop the image
         //Specify the size to crop, width is the same as original height goes up until the found line
-        double firstDoubleLine = findFirstDoubleLine(lines);
+        double firstDoubleLine = findFirstDoubleLine(lines, convertedImage.size().height);
         Size cropSize = new Size(convertedImage.size().width + 20, firstDoubleLine );
         //Create mat to crop into
         Mat cropped = new Mat();
@@ -149,16 +149,30 @@ public class ObjectRecognizer {
         return bm;
     }
 
-    private double findFirstDoubleLine(Mat lines){
+    private double findFirstDoubleLine(Mat lines, double imageSize){
         ArrayList<Double> yCoords = new ArrayList<>();
-        for (int i = 0; i < lines.rows() - 1; i++) {
+
+        List <Double> sortedY = new ArrayList<Double>();
+        for(int i = 0; i< lines.rows()-1; i++) {
             double[] vec = lines.get(i, 0);
             double [] vec2 = lines.get(i+1, 0);
             double y1 = vec[1];
             double y2 = vec2[1];
 
-            if(Math.abs(y1 - y2) < 5){
-                yCoords.add(Math.min(y1, y2));
+            if(y1> imageSize*0.30 && y2 > imageSize*0.30 && y1<imageSize*0.8 && y2<imageSize*0.8) {
+                sortedY.add(y1);
+                sortedY.add(y2);
+            }
+        }
+
+        Collections.sort(sortedY);
+        for (int i = 0; i < sortedY.size()-1; i++) {
+
+            double y1 = sortedY.get(i);
+            double y2 = sortedY.get(i+1);
+
+            if(Math.abs(y1 - y2) < 120 && Math.abs(y1 - y2) > 0){
+                yCoords.add(Math.max(y1, y2));
             }
         }
 
