@@ -1,4 +1,4 @@
-package com.example.bvpraktmme.kassenzettel;
+package com.example.bvpraktmme.kassenzettel.ocr;
 
 import android.content.res.AssetManager;
 import android.graphics.Bitmap;
@@ -13,6 +13,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.example.bvpraktmme.kassenzettel.R;
 import com.googlecode.tesseract.android.TessBaseAPI;
 
 import java.io.File;
@@ -24,9 +25,10 @@ import java.io.OutputStream;
 
 public class OcrActivity extends AppCompatActivity {
 
-    Bitmap image = null;
+    public static Bitmap image = null;
     private TessBaseAPI mTess; //Tess API reference
-    String datapath = ""; //path to folder containing language data file
+    private String datapath = ""; //path to folder containing language data file
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,24 +43,14 @@ public class OcrActivity extends AppCompatActivity {
 
 
         Bundle extras = getIntent().getExtras();
-        Uri finalImageUri = null;
-        if (extras != null && extras.containsKey(PriceAreaDetectionActivity.FINAL_URI_KEY)){
-            String filepath = extras.getString(PriceAreaDetectionActivity.FINAL_URI_KEY);
-
-            finalImageUri = Uri.parse(filepath);
-
-            if (finalImageUri != null) {
-                try {
-                    image = MediaStore.Images.Media.getBitmap(getApplicationContext().getContentResolver(), finalImageUri);
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-        }
+        //Uri finalImageUri = null;
+        //if (extras != null && extras.containsKey(PriceAreaDetectionActivity.FINAL_URI_KEY)){
+          //  image = getIntent().getParcelableExtra(PriceAreaDetectionActivity.FINAL_URI_KEY);
+        //}
 
         //Display processed image at top
-        ImageView imageView = (ImageView) findViewById(R.id.ProcessedImageView);
-        Glide.with(this).loadFromMediaStore(finalImageUri).into(imageView);
+        //ImageView imageView = (ImageView) findViewById(R.id.ProcessedImageView);
+        //Glide.with(this).loadFromMediaStore(finalImageUri).into(imageView);
 
 
         datapath = getFilesDir()+ "/tesseract/";

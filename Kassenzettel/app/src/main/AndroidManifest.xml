@@ -23,13 +23,13 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".CameraActivity" />
+        <activity android:name=".camera.CameraActivity" />
         <activity android:name=".ObjectDetectionActivity" />
         <activity
-            android:name=".ProcessingActivity"
+            android:name=".processing.ProcessingActivity"
             android:parentActivityName=".MainActivity" />
         <activity android:name=".PriceAreaDetectionActivity" />
-        <activity android:name=".OcrActivity"></activity>
+        <activity android:name=".ocr.OcrActivity"></activity>
     </application>
 
 </manifest>

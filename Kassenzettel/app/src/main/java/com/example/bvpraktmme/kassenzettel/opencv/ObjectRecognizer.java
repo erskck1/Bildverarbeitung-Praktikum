@@ -18,6 +18,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import static org.opencv.imgproc.Imgproc.MORPH_RECT;
+
 public class ObjectRecognizer {
 
     private Mat imageAsMat;
@@ -130,7 +132,7 @@ public class ObjectRecognizer {
 
         double minLineLength = convertedImage.size().width*0.60;
 
-        Imgproc.HoughLinesP(canny, lines,1, Math.PI/180,50,minLineLength,30);
+        Imgproc.HoughLinesP(canny, lines,1, Math.PI/180,50,minLineLength,23);
 
         //Crop the image
         //Specify the size to crop, width is the same as original height goes up until the found line

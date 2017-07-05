@@ -1,4 +1,4 @@
-package com.example.bvpraktmme.kassenzettel;
+package com.example.bvpraktmme.kassenzettel.camera;
 
 import android.Manifest;
 import android.app.Activity;
@@ -44,6 +44,10 @@ import android.view.TextureView;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
+
+import com.example.bvpraktmme.kassenzettel.AutoFitTextureView;
+import com.example.bvpraktmme.kassenzettel.R;
+import com.example.bvpraktmme.kassenzettel.processing.ProcessingActivity;
 
 import java.io.File;
 import java.io.FileOutputStream;

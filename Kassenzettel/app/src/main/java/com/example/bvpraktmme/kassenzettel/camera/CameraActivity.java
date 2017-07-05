@@ -1,7 +1,9 @@
-package com.example.bvpraktmme.kassenzettel;
+package com.example.bvpraktmme.kassenzettel.camera;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+
+import com.example.bvpraktmme.kassenzettel.R;
 
 public class CameraActivity extends AppCompatActivity {
 
