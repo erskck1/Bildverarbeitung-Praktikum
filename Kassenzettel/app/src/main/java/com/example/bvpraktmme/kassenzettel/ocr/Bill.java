@@ -17,10 +17,11 @@ public class Bill {
     String location;
     double sum;
 
-    public Bill(String market, ArrayList<ShoppingItem> items, double sum){
+    public Bill(String market, ArrayList<ShoppingItem> items, double sum, String location){
         this.market = market;
         this.dateAndTime = df.format(c.getTime());
         this.items = items;
         this.sum = sum;
+        this.location = location;
     }
 }
