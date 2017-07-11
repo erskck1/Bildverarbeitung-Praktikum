@@ -6,6 +6,7 @@ import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Looper;
 import android.provider.MediaStore;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
@@ -18,6 +19,9 @@ import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import com.example.bvpraktmme.kassenzettel.ExceptionHandler;
+import com.example.bvpraktmme.kassenzettel.MainActivity;
+import com.example.bvpraktmme.kassenzettel.PictureNotAvailableException;
 import com.example.bvpraktmme.kassenzettel.camera.CameraFragment;
 import com.example.bvpraktmme.kassenzettel.ocr.OcrActivity;
 import com.example.bvpraktmme.kassenzettel.R;
@@ -30,6 +34,7 @@ import java.io.IOException;
 
 public class ProcessingActivity extends AppCompatActivity {
 
+    private static final String EXCEPTION_MESSAGE = "Please choose or take another picture!";
     private static final String TAG = "ProcessingActivity";
 
     private Uri imageUri;
@@ -41,6 +46,7 @@ public class ProcessingActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
 
         super.onCreate(savedInstanceState);
+        Thread.setDefaultUncaughtExceptionHandler(new ExceptionHandler(ProcessingActivity.this));
         setContentView(R.layout.activity_processing);
 
         //Menu Insertion
@@ -78,10 +84,18 @@ public class ProcessingActivity extends AppCompatActivity {
         processingButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+                    try {
                         startProcess();
-                        OcrActivity.image = convertedImage;
-                        Intent ocrIntent = new Intent(getApplicationContext(), OcrActivity.class);
-                        startActivity(ocrIntent);
+                    } catch (Exception e) {
+                        ProcessingActivity.this.finish();
+                        Toast.makeText(getApplicationContext(), EXCEPTION_MESSAGE, Toast.LENGTH_LONG).show();
+                        Intent mIntent = new Intent(getApplicationContext(), MainActivity.class);
+                        startActivity(mIntent);
+                        return;
+                    }
+                    OcrActivity.image = convertedImage;
+                    Intent ocrIntent = new Intent(getApplicationContext(), OcrActivity.class);
+                    startActivity(ocrIntent);
                 }
             });
 
@@ -91,7 +105,7 @@ public class ProcessingActivity extends AppCompatActivity {
 
     }
 
-    public void startProcess() {
+    public void startProcess() throws PictureNotAvailableException {
         Bitmap bm = null;
         if (imageUri != null) {
             try {
@@ -100,7 +114,6 @@ public class ProcessingActivity extends AppCompatActivity {
                 e.printStackTrace();
             }
         }
-
         recognizer.setImage(bm);
         convertedImage = recognizer.applyFilters();
         recognizer.setImage(convertedImage);

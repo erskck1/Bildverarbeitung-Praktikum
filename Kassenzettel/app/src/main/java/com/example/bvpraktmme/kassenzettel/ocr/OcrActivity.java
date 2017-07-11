@@ -1,5 +1,6 @@
 package com.example.bvpraktmme.kassenzettel.ocr;
 
+import android.content.Intent;
 import android.content.res.AssetManager;
 import android.graphics.Bitmap;
 import android.net.Uri;
@@ -11,9 +12,13 @@ import android.text.method.ScrollingMovementMethod;
 import android.view.MenuItem;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import com.example.bvpraktmme.kassenzettel.ExceptionHandler;
+import com.example.bvpraktmme.kassenzettel.MainActivity;
 import com.example.bvpraktmme.kassenzettel.R;
+import com.example.bvpraktmme.kassenzettel.processing.ProcessingActivity;
 import com.googlecode.tesseract.android.TessBaseAPI;
 
 import java.io.File;
@@ -28,11 +33,12 @@ public class OcrActivity extends AppCompatActivity {
     public static Bitmap image = null;
     private TessBaseAPI mTess; //Tess API reference
     private String datapath = ""; //path to folder containing language data file
-
+    private static final String EXCEPTION_MESSAGE = "Please choose or take another picture!";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Thread.setDefaultUncaughtExceptionHandler(new ExceptionHandler(this));
         setContentView(R.layout.activity_ocr_activity);
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -40,18 +46,6 @@ public class OcrActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
         getSupportActionBar().setTitle("OCR Activity");
-
-
-        Bundle extras = getIntent().getExtras();
-        //Uri finalImageUri = null;
-        //if (extras != null && extras.containsKey(PriceAreaDetectionActivity.FINAL_URI_KEY)){
-          //  image = getIntent().getParcelableExtra(PriceAreaDetectionActivity.FINAL_URI_KEY);
-        //}
-
-        //Display processed image at top
-        //ImageView imageView = (ImageView) findViewById(R.id.ProcessedImageView);
-        //Glide.with(this).loadFromMediaStore(finalImageUri).into(imageView);
-
 
         datapath = getFilesDir()+ "/tesseract/";
 
@@ -61,10 +55,19 @@ public class OcrActivity extends AppCompatActivity {
 
         checkFile(new File(datapath + "tessdata/"));
         mTess.init(datapath, lang);
-        processImage();
+        try {
+            processImage();
+        } catch (Exception e) {
+            OcrActivity.this.finish();
+            Toast.makeText(getApplicationContext(), EXCEPTION_MESSAGE, Toast.LENGTH_LONG).show();
+            Intent mIntent = new Intent(getApplicationContext(), MainActivity.class);
+            startActivity(mIntent);
+            return;
+        }
+
     }
 
-    public void processImage(){
+    private void processImage(){
         String OCResult = null;
         mTess.setImage(image);
         OCResult = mTess.getUTF8Text();

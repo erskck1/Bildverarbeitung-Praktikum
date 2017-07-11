@@ -3,6 +3,8 @@ package com.example.bvpraktmme.kassenzettel.opencv;
 import android.graphics.Bitmap;
 import android.util.Log;
 
+import com.example.bvpraktmme.kassenzettel.PictureNotAvailableException;
+
 import org.opencv.android.Utils;
 import org.opencv.core.Core;
 import org.opencv.core.Mat;
@@ -31,7 +33,7 @@ public class ObjectRecognizer {
         this.image = image;
     }
 
-    public Bitmap applyFilters() {
+    public Bitmap applyFilters() throws PictureNotAvailableException{
 
         convertedImage = FilterUtils.getMatBy(image);
         convertedImage2 = FilterUtils.getMatBy(image); // need to show in presentation
@@ -63,6 +65,9 @@ public class ObjectRecognizer {
 
         List<RotatedRect> rotatedRects = new ArrayList<>();
 
+        if(contours.size() == 0) {
+            throw new PictureNotAvailableException();
+        }
         // preparation for rotation
         // firstly change the type of blobs to RotatedRect object from MatOfPoint Object
         for (MatOfPoint contour : contours) {
@@ -74,7 +79,7 @@ public class ObjectRecognizer {
         // preparation to find biggest blob
         RotatedRect biggestRect = null;
         if(rotatedRects.isEmpty()) {
-            // TODO if there are not any blob
+            throw new PictureNotAvailableException();
         } else {
             // finding biggest blob
             biggestRect = new RotatedRect();
