@@ -71,6 +71,7 @@ public class OcrActivity extends AppCompatActivity {
         TextView OCRTextView = (TextView) findViewById(R.id.OCRTextView);
         OCRTextView.setMovementMethod(new ScrollingMovementMethod());
         OCRTextView.setText(OCResult);
+
     }
 
 
