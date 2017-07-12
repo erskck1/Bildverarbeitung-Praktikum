@@ -24,11 +24,9 @@
             </intent-filter>
         </activity>
         <activity android:name=".camera.CameraActivity" />
-        <activity android:name=".ObjectDetectionActivity" />
         <activity
             android:name=".processing.ProcessingActivity"
             android:parentActivityName=".MainActivity" />
-        <activity android:name=".PriceAreaDetectionActivity" />
         <activity android:name=".ocr.OcrActivity"></activity>
     </application>
 

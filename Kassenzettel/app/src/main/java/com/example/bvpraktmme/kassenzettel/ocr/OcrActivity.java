@@ -4,12 +4,14 @@ import android.content.Intent;
 import android.content.res.AssetManager;
 import android.graphics.Bitmap;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.method.ScrollingMovementMethod;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -17,6 +19,7 @@ import android.widget.Toast;
 import com.bumptech.glide.Glide;
 import com.example.bvpraktmme.kassenzettel.ExceptionHandler;
 import com.example.bvpraktmme.kassenzettel.MainActivity;
+import com.example.bvpraktmme.kassenzettel.PictureNotAvailableException;
 import com.example.bvpraktmme.kassenzettel.R;
 import com.example.bvpraktmme.kassenzettel.processing.ProcessingActivity;
 import com.googlecode.tesseract.android.TessBaseAPI;
@@ -55,35 +58,60 @@ public class OcrActivity extends AppCompatActivity {
 
         checkFile(new File(datapath + "tessdata/"));
         mTess.init(datapath, lang);
-        try {
-            processImage();
-        } catch (Exception e) {
-            if(MainActivity.instance != null) {
-                MainActivity.instance.finish();
-            }
-            Toast.makeText(getApplicationContext(), EXCEPTION_MESSAGE, Toast.LENGTH_LONG).show();
-            Intent mIntent = new Intent(getApplicationContext(), MainActivity.class);
-            startActivity(mIntent);
-            finish();
-            return;
-        }
+        new OcrActivity.ImageProcessing().execute();
 
     }
 
-    private void processImage(){
+    private class ImageProcessing extends AsyncTask<String, Void, String> {
+
+        @Override
+        protected String doInBackground(String... params) {
+            String result;
+            try {
+                result = processImage();
+            } catch (Exception e) {
+                return "notexecuted";
+            }
+            return result;
+        }
+
+        @Override
+        protected void onPostExecute(String result) {
+            if(!result.equals("notexecuted") && result !=null) {
+                TextView OCRTextView = (TextView) findViewById(R.id.OCRTextView);
+                OCRTextView.setMovementMethod(new ScrollingMovementMethod());
+                OCRTextView.setText(result);
+                Toast.makeText(getApplicationContext(), "Process successfully ended!", Toast.LENGTH_SHORT).show();
+            } else {
+                if(MainActivity.instance != null) {
+                    MainActivity.instance.finish();
+                }
+                Toast.makeText(getApplicationContext(), EXCEPTION_MESSAGE, Toast.LENGTH_LONG).show();
+                Intent mIntent = new Intent(getApplicationContext(), MainActivity.class);
+                startActivity(mIntent);
+                finish();
+            }
+
+        }
+
+        @Override
+        protected void onPreExecute() {
+
+        }
+
+        @Override
+        protected void onProgressUpdate(Void... values) {}
+    }
+
+    private String processImage(){
         String OCResult;
         mTess.setImage(image);
         OCResult = mTess.getUTF8Text();
-
         // TODO parse OCResult and create a Bill Object and then
-        // OCRTextView.setText(BillObject.toString());
-
-        TextView OCRTextView = (TextView) findViewById(R.id.OCRTextView);
-        OCRTextView.setMovementMethod(new ScrollingMovementMethod());
-        OCRTextView.setText(OCResult);
+        // return BillObject.toString();
+        return OCResult;
 
     }
-
 
     private void checkFile(File dir) {
         if (!dir.exists()&& dir.mkdirs()){

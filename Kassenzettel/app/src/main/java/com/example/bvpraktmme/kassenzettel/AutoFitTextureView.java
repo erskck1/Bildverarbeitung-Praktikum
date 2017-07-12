@@ -16,10 +16,6 @@
 
 package com.example.bvpraktmme.kassenzettel;
 
-/**
- * Created by Michael Graf on 08.05.2017.
- */
-
 import android.content.Context;
 import android.util.AttributeSet;
 import android.view.TextureView;
