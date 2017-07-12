@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Looper;
 import android.provider.MediaStore;
@@ -84,22 +85,7 @@ public class ProcessingActivity extends AppCompatActivity {
         processingButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    try {
-                        startProcess();
-                    } catch (Exception e) {
-                        if(MainActivity.instance != null) {
-                            MainActivity.instance.finish();
-                        }
-
-                        Toast.makeText(getApplicationContext(), EXCEPTION_MESSAGE, Toast.LENGTH_LONG).show();
-                        Intent mIntent = new Intent(ProcessingActivity.this, MainActivity.class);
-                        startActivity(mIntent);
-                        finish();
-                        return;
-                    }
-                    OcrActivity.image = convertedImage;
-                    Intent ocrIntent = new Intent(getApplicationContext(), OcrActivity.class);
-                    startActivity(ocrIntent);
+                    new ImageProcessing().execute();
                 }
             });
 
@@ -109,19 +95,59 @@ public class ProcessingActivity extends AppCompatActivity {
 
     }
 
-    public void startProcess() throws PictureNotAvailableException {
-        Bitmap bm = null;
-        if (imageUri != null) {
+    private class ImageProcessing extends AsyncTask<String, Void, String> {
+
+        @Override
+        protected String doInBackground(String... params) {
             try {
-                bm = MediaStore.Images.Media.getBitmap(getApplicationContext().getContentResolver(), imageUri);
-            } catch (IOException e) {
-                e.printStackTrace();
+                startProcess();
+            } catch (Exception e) {
+                return "Not executed";
+            }
+            return "Executed";
+        }
+
+        @Override
+        protected void onPostExecute(String result) {
+            if(result.equals("Executed")) {
+                OcrActivity.image = convertedImage;
+                Intent ocrIntent = new Intent(getApplicationContext(), OcrActivity.class);
+                startActivity(ocrIntent);
+                Toast.makeText(getApplicationContext(), "Process successfully ended!", Toast.LENGTH_LONG).show();
+            } else {
+                if(MainActivity.instance != null) {
+                    MainActivity.instance.finish();
+                }
+                Toast.makeText(getApplicationContext(), EXCEPTION_MESSAGE, Toast.LENGTH_LONG).show();
+                Intent mIntent = new Intent(ProcessingActivity.this, MainActivity.class);
+                startActivity(mIntent);
+                ProcessingActivity.this.finish();
             }
         }
-        recognizer.setImage(bm);
-        convertedImage = recognizer.applyFilters();
-        recognizer.setImage(convertedImage);
-        convertedImage = recognizer.findPriceArea();
+
+        @Override
+        protected void onPreExecute() {
+            processingButton.hide();
+            Toast.makeText(getApplicationContext(), "Process started!", Toast.LENGTH_SHORT).show();
+        }
+
+        @Override
+        protected void onProgressUpdate(Void... values) {}
+
+        private void startProcess() throws PictureNotAvailableException {
+            Bitmap bm = null;
+            if (imageUri != null) {
+                try {
+                    bm = MediaStore.Images.Media.getBitmap(getApplicationContext().getContentResolver(), imageUri);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+            recognizer.setImage(bm);
+            convertedImage = recognizer.applyFilters();
+            recognizer.setImage(convertedImage);
+            convertedImage = recognizer.findPriceArea();
+        }
     }
 
     @Override
