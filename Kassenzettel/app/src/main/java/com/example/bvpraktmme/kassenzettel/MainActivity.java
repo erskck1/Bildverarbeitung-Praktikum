@@ -19,21 +19,15 @@ import org.opencv.android.OpenCVLoader;
 
 public class MainActivity extends AppCompatActivity {
 
+    public static MainActivity instance;
     private static final String TAG = "MainActivity";
-
-    static {
-        if(!OpenCVLoader.initDebug()){
-            Log.d(TAG, "OpenCV not loaded");
-        } else {
-            Log.d(TAG, "OpenCV loaded");
-        }
-    }
 
     private int REQUEST_CAMERA = 0, SELECT_FILE = 1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        instance = this;
         Thread.setDefaultUncaughtExceptionHandler(new ExceptionHandler(MainActivity.this));
         setContentView(R.layout.activity_main);
 
@@ -107,7 +101,7 @@ public class MainActivity extends AppCompatActivity {
             if (requestCode == SELECT_FILE)
                 onSelectFromGalleryResult(data);
             else if (requestCode == REQUEST_CAMERA) {
-                //onCaptureImageResult(data);
+                //onCaptureImageResult(data); // TODO Michael
             }
 
         }
@@ -117,6 +111,12 @@ public class MainActivity extends AppCompatActivity {
         Intent intent = new Intent(getApplicationContext(), ProcessingActivity.class);
         intent.putExtra(CameraFragment.IMAGE_URI, data.getData().toString());
         startActivity(intent);
+    }
+
+    @Override
+    public void finish() {
+        super.finish();
+        instance = null;
     }
 
 }

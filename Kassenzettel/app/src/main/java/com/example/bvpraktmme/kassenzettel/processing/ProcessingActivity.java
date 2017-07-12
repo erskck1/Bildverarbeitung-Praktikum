@@ -54,7 +54,7 @@ public class ProcessingActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
-        getSupportActionBar().setTitle("ProcessingActivity");
+        getSupportActionBar().setTitle(TAG);
 
         // Ask for permissions
         final boolean permission =PermissionOrganizer.checkPermission(ProcessingActivity.this);
@@ -87,10 +87,14 @@ public class ProcessingActivity extends AppCompatActivity {
                     try {
                         startProcess();
                     } catch (Exception e) {
-                        ProcessingActivity.this.finish();
+                        if(MainActivity.instance != null) {
+                            MainActivity.instance.finish();
+                        }
+
                         Toast.makeText(getApplicationContext(), EXCEPTION_MESSAGE, Toast.LENGTH_LONG).show();
-                        Intent mIntent = new Intent(getApplicationContext(), MainActivity.class);
+                        Intent mIntent = new Intent(ProcessingActivity.this, MainActivity.class);
                         startActivity(mIntent);
+                        finish();
                         return;
                     }
                     OcrActivity.image = convertedImage;

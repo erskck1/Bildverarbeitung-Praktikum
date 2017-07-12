@@ -58,19 +58,26 @@ public class OcrActivity extends AppCompatActivity {
         try {
             processImage();
         } catch (Exception e) {
-            OcrActivity.this.finish();
+            if(MainActivity.instance != null) {
+                MainActivity.instance.finish();
+            }
             Toast.makeText(getApplicationContext(), EXCEPTION_MESSAGE, Toast.LENGTH_LONG).show();
             Intent mIntent = new Intent(getApplicationContext(), MainActivity.class);
             startActivity(mIntent);
+            finish();
             return;
         }
 
     }
 
     private void processImage(){
-        String OCResult = null;
+        String OCResult;
         mTess.setImage(image);
         OCResult = mTess.getUTF8Text();
+
+        // TODO parse OCResult and create a Bill Object and then
+        // OCRTextView.setText(BillObject.toString());
+
         TextView OCRTextView = (TextView) findViewById(R.id.OCRTextView);
         OCRTextView.setMovementMethod(new ScrollingMovementMethod());
         OCRTextView.setText(OCResult);
