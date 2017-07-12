@@ -7,7 +7,6 @@ import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.Looper;
 import android.provider.MediaStore;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
@@ -17,6 +16,7 @@ import android.view.MenuItem;
 import android.view.View;
 
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
@@ -37,7 +37,7 @@ public class ProcessingActivity extends AppCompatActivity {
 
     private static final String EXCEPTION_MESSAGE = "Please choose or take another picture!";
     private static final String TAG = "ProcessingActivity";
-
+    private ProgressBar bar;
     private Uri imageUri;
     private ObjectRecognizer recognizer;
     private Bitmap convertedImage;
@@ -49,7 +49,7 @@ public class ProcessingActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         Thread.setDefaultUncaughtExceptionHandler(new ExceptionHandler(ProcessingActivity.this));
         setContentView(R.layout.activity_processing);
-
+        bar = (ProgressBar) this.findViewById(R.id.progressBar);
         //Menu Insertion
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -88,7 +88,6 @@ public class ProcessingActivity extends AppCompatActivity {
                     new ImageProcessing().execute();
                 }
             });
-
         // to show selected convertedImage
         ImageView imageView = (ImageView) findViewById(R.id.display_image);
         Glide.with(this).loadFromMediaStore(imageUri).into(imageView);
@@ -113,7 +112,6 @@ public class ProcessingActivity extends AppCompatActivity {
                 OcrActivity.image = convertedImage;
                 Intent ocrIntent = new Intent(getApplicationContext(), OcrActivity.class);
                 startActivity(ocrIntent);
-                Toast.makeText(getApplicationContext(), "Process successfully ended!", Toast.LENGTH_LONG).show();
             } else {
                 if(MainActivity.instance != null) {
                     MainActivity.instance.finish();
@@ -123,12 +121,15 @@ public class ProcessingActivity extends AppCompatActivity {
                 startActivity(mIntent);
                 ProcessingActivity.this.finish();
             }
+            bar.setVisibility(View.GONE);
+            processingButton.show();
         }
 
         @Override
         protected void onPreExecute() {
             processingButton.hide();
-            Toast.makeText(getApplicationContext(), "Process started!", Toast.LENGTH_SHORT).show();
+            bar.setVisibility(View.VISIBLE);
+            Toast.makeText(getApplicationContext(), "Process successfully started!", Toast.LENGTH_SHORT).show();
         }
 
         @Override
