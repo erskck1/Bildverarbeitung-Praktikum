@@ -13,6 +13,7 @@ import android.text.method.ScrollingMovementMethod;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -37,13 +38,14 @@ public class OcrActivity extends AppCompatActivity {
     private TessBaseAPI mTess; //Tess API reference
     private String datapath = ""; //path to folder containing language data file
     private static final String EXCEPTION_MESSAGE = "Please choose or take another picture!";
+    private ProgressBar bar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Thread.setDefaultUncaughtExceptionHandler(new ExceptionHandler(this));
         setContentView(R.layout.activity_ocr_activity);
-
+        bar = (ProgressBar) this.findViewById(R.id.progressBar);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -70,6 +72,7 @@ public class OcrActivity extends AppCompatActivity {
             try {
                 result = processImage();
             } catch (Exception e) {
+                e.printStackTrace();
                 return "notexecuted";
             }
             return result;
@@ -91,12 +94,12 @@ public class OcrActivity extends AppCompatActivity {
                 startActivity(mIntent);
                 finish();
             }
-
+            bar.setVisibility(View.GONE);
         }
 
         @Override
         protected void onPreExecute() {
-
+            bar.setVisibility(View.VISIBLE);
         }
 
         @Override

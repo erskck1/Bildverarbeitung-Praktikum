@@ -166,7 +166,7 @@ public class ObjectRecognizer {
             double y1 = vec[1];
             double y2 = vec2[1];
 
-            if(y1> imageSize*0.30 && y2 > imageSize*0.30 && y1<imageSize*0.8 && y2<imageSize*0.8) {
+            if(y1> imageSize*0.25 && y2 > imageSize*0.25 && y1<imageSize*0.8 && y2<imageSize*0.8) {
                 sortedY.add(y1);
                 sortedY.add(y2);
             }
@@ -178,11 +178,14 @@ public class ObjectRecognizer {
             double y1 = sortedY.get(i);
             double y2 = sortedY.get(i+1);
 
-            if(Math.abs(y1 - y2) < 120 && Math.abs(y1 - y2) > 0){
+            if(Math.abs(y1 - y2) < 200 && Math.abs(y1 - y2) > 0){
                 yCoords.add(Math.max(y1, y2));
             }
         }
 
+        if(yCoords.size() == 0 ) { // TODO Michael Ersoy
+            return imageSize*0.7;
+        }
         return Collections.min(yCoords);
     }
 }

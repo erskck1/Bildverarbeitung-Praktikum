@@ -7,31 +7,43 @@
     tools:context="com.example.bvpraktmme.kassenzettel.ocr.OcrActivity"
     android:fitsSystemWindows="true">
 
-        <include
-            android:id="@+id/toolbar"
-            layout="@layout/toolbar"
+        <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-        </include>
+            android:layout_height="match_parent">
 
-        <ImageView
-            android:layout_width="match_parent"
-            android:layout_height="500px"
-            android:layout_below="@+id/toolbar"
-            android:id="@+id/ProcessedImageView"/>
+                <include
+                    android:id="@+id/toolbar"
+                    layout="@layout/toolbar"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"></include>
 
+                <ImageView
+                    android:id="@+id/ProcessedImageView"
+                    android:layout_width="match_parent"
+                    android:layout_height="500px"
+                    android:layout_below="@+id/toolbar" />
 
-        <TextView
-            android:id="@+id/OCRTextView"
-            android:layout_width="match_parent"
+                <TextView
+                    android:id="@+id/OCRTextView"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentBottom="true"
+                    android:layout_alignParentStart="true"
+                    android:layout_below="@+id/ProcessedImageView"
+                    android:scrollbars="vertical"
+                    android:textAlignment="center"
+                    android:textColor="@android:color/black"
+                    android:textSize="18sp" />
+        </RelativeLayout>
+        <ProgressBar
+            android:id="@+id/progressBar"
+            style="?android:attr/progressBarStyleLarge"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true"
-            android:layout_alignParentStart="true"
-            android:layout_below="@+id/ProcessedImageView"
-            android:textAlignment="center"
-            android:textColor="@android:color/black"
-            android:textSize="18sp"
-            android:scrollbars = "vertical"/>
-
+            android:layout_centerHorizontal="true"
+            android:layout_centerVertical="true"
+            android:visibility="gone"
+            android:indeterminateDrawable="@drawable/progress" >
+        </ProgressBar>
 
 </RelativeLayout>

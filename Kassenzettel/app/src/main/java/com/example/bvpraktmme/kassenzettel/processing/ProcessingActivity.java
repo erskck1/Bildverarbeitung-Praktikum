@@ -101,6 +101,7 @@ public class ProcessingActivity extends AppCompatActivity {
             try {
                 startProcess();
             } catch (Exception e) {
+                e.printStackTrace();
                 return "Not executed";
             }
             return "Executed";
@@ -109,6 +110,7 @@ public class ProcessingActivity extends AppCompatActivity {
         @Override
         protected void onPostExecute(String result) {
             if(result.equals("Executed")) {
+                bar.setVisibility(View.GONE);
                 OcrActivity.image = convertedImage;
                 Intent ocrIntent = new Intent(getApplicationContext(), OcrActivity.class);
                 startActivity(ocrIntent);
@@ -116,12 +118,12 @@ public class ProcessingActivity extends AppCompatActivity {
                 if(MainActivity.instance != null) {
                     MainActivity.instance.finish();
                 }
+                bar.setVisibility(View.GONE);
                 Toast.makeText(getApplicationContext(), EXCEPTION_MESSAGE, Toast.LENGTH_LONG).show();
                 Intent mIntent = new Intent(ProcessingActivity.this, MainActivity.class);
                 startActivity(mIntent);
                 ProcessingActivity.this.finish();
             }
-            bar.setVisibility(View.GONE);
             processingButton.show();
         }
 
