@@ -16,6 +16,7 @@ public class StringParser {
     String ocrResult;
     Bill bill;
     String [] resultList;
+    //Predefined markets maybe do this in another way? or simply add mor names to this
     String [] markets = {"Aldi", "Coop", "Edeka", "Marktkauf", "E Center", "Netto", "SPAR", "NP-Markt",
             "Famila", "K+K", "Metro", "Real", "Netto", "Norma", "REWE", "Penny", "Kaufland", "Lidl"};
 
@@ -52,15 +53,18 @@ public class StringParser {
      */
     private ArrayList<ShoppingItem> parseItemList(ArrayList<String> ppResult){
         ArrayList<ShoppingItem> items = new ArrayList<>();
-        NGram nGram = new NGram(2);
+        NGram nGram = new NGram(3);
         boolean itemArea = false;
+        boolean end = false;
         for ( int i = 0; i < ppResult.size(); i++){
-            boolean end = false;
+
             if(ppResult.get(i).isEmpty())
                 continue;
             String [] split = ppResult.get(i).split(" ");
+            //TODO add recongized sum? or simply calculate from items
             for (int j = 0; j < split.length; j++) {
-                if (nGram.similarity(split[j], "Summe") > 0.3)
+                double sim = nGram.similarity(split[j], "SUMME");
+                if ( sim > 0.5)
                     end = true;
             }
             if (end)
@@ -149,7 +153,6 @@ public class StringParser {
         double stringDist = 0.0;
         for(int i = 0; i < markets.length; i++){
             double similarity = ngram.similarity(marketResult,markets[i]);
-            Log.d(marketResult, "parseMarket: " + markets[i] + " : " + similarity);
             if(similarity > stringDist){
                 stringDist = similarity;
                 index = i;
