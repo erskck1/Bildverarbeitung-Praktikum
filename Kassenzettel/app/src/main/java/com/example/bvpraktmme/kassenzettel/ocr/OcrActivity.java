@@ -110,6 +110,8 @@ public class OcrActivity extends AppCompatActivity {
         String OCResult;
         mTess.setImage(image);
         OCResult = mTess.getUTF8Text();
+        StringParser parser = new StringParser(OCResult);
+        Bill bill = parser.parse();
         // TODO parse OCResult and create a Bill Object and then
         // return BillObject.toString();
         return OCResult;

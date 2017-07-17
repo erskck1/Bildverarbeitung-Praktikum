@@ -10,35 +10,44 @@ public class Bill {
     private Calendar c = Calendar.getInstance();
     private SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm");
     private ArrayList<ShoppingItem> items;
-    private String location;
+    private String adress;
+    private String city;
     private double sum;
 
-    public Bill(String market, ArrayList<ShoppingItem> items, double sum, String location){
+    public Bill(String market, ArrayList<ShoppingItem> items, double sum, String adress){
         this.market = market;
         this.dateAndTime = df.format(c.getTime());
         this.items = items;
         this.sum = sum;
-        this.location = location;
+        this.adress = adress;
+
     }
 
-    @Override
-    public String toString() {
-        StringBuilder stringBuilder = new StringBuilder();
-        stringBuilder.append(String.format("Market   : %s\n", market));
-        stringBuilder.append(String.format("Date     : %s\n", dateAndTime));
-        stringBuilder.append(String.format("Location : %s\n", location));
-        stringBuilder.append(String.format("Products : \n"));
-
-        for(ShoppingItem item : items) {
-            stringBuilder.append(String.format("%s\t%.2f €", item.getProduct(), item.getPrice()));
-            if(item.getWeight() != 0 && item.getPricePerKg() != 0) {
-                stringBuilder.append(String.format("%.2f Kg\\Stück\t%.2f € Kg\\Stück", item.getWeight(), item.getPricePerKg()));
-            }
-        }
-
-        stringBuilder.append(String.format("Sum      : %.2f €", sum));
-        return stringBuilder.toString();
+    /**
+     * Default empty constructor
+     */
+    public Bill(){
+        this.dateAndTime = df.format(c.getTime());
     }
+
+//    @Override
+//    public String toString() {
+//        StringBuilder stringBuilder = new StringBuilder();
+//        stringBuilder.append(String.format("Market   : %s\n", market));
+//        stringBuilder.append(String.format("Date     : %s\n", dateAndTime));
+//        stringBuilder.append(String.format("Location : %s\n", location));
+//        stringBuilder.append(String.format("Products : \n"));
+//
+//        for(ShoppingItem item : items) {
+//            stringBuilder.append(String.format("%s\t%.2f €", item.getProduct(), item.getPrice()));
+//            if(item.getWeight() != 0 && item.getPricePerKg() != 0) {
+//                stringBuilder.append(String.format("%.2f Kg\\Stück\t%.2f € Kg\\Stück", item.getWeight(), item.getPricePerKg()));
+//            }
+//        }
+//
+//        stringBuilder.append(String.format("Sum      : %.2f €", sum));
+//        return stringBuilder.toString();
+//    }
 
     public String getMarket() {
         return market;
@@ -72,14 +81,6 @@ public class Bill {
         this.items = items;
     }
 
-    public String getLocation() {
-        return location;
-    }
-
-    public void setLocation(String location) {
-        this.location = location;
-    }
-
     public double getSum() {
         return sum;
     }
@@ -87,4 +88,21 @@ public class Bill {
     public void setSum(double sum) {
         this.sum = sum;
     }
+
+    public String getAdress() {
+        return adress;
+    }
+
+    public void setAdress(String adress) {
+        this.adress = adress;
+    }
+
+    public String getCity() {
+        return city;
+    }
+
+    public void setCity(String city) {
+        this.city = city;
+    }
+
 }

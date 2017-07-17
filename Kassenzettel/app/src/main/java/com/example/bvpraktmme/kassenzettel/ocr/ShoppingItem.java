@@ -1,10 +1,14 @@
 package com.example.bvpraktmme.kassenzettel.ocr;
 
+/**
+ * Created by Michael Graf on 11.07.2017.
+ */
+
 public class ShoppingItem {
-    private String product;
-    private double price;
-    private double weight;
-    private double pricePerKg;
+    String product;
+    double price;
+    double weight;
+    double pricePerKg;
 
     public ShoppingItem(String product, double price, double weight, double pricePerKg){
         this.product = product;
@@ -13,12 +17,16 @@ public class ShoppingItem {
         this.pricePerKg = pricePerKg;
     }
 
-    public String getProduct() {
-        return product;
+    /**
+     * Default empty constructor
+     */
+    public ShoppingItem(){
+
+
     }
 
-    public void setProduct(String product) {
-        this.product = product;
+    public String getProduct() {
+        return product;
     }
 
     public double getPrice() {
@@ -44,4 +52,10 @@ public class ShoppingItem {
     public void setPricePerKg(double pricePerKg) {
         this.pricePerKg = pricePerKg;
     }
+
+    public void setProduct(String product) {
+
+        this.product = product;
+    }
+
 }
