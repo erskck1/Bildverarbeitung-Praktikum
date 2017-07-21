@@ -10,6 +10,7 @@ import android.provider.MediaStore;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.method.ScrollingMovementMethod;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
@@ -22,6 +23,7 @@ import com.example.bvpraktmme.kassenzettel.ExceptionHandler;
 import com.example.bvpraktmme.kassenzettel.MainActivity;
 import com.example.bvpraktmme.kassenzettel.PictureNotAvailableException;
 import com.example.bvpraktmme.kassenzettel.R;
+import com.example.bvpraktmme.kassenzettel.database.SQliteDatabase;
 import com.example.bvpraktmme.kassenzettel.processing.ProcessingActivity;
 import com.googlecode.tesseract.android.TessBaseAPI;
 
@@ -31,6 +33,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.Arrays;
 
 public class OcrActivity extends AppCompatActivity {
 
@@ -39,6 +42,7 @@ public class OcrActivity extends AppCompatActivity {
     private String datapath = ""; //path to folder containing language data file
     private static final String EXCEPTION_MESSAGE = "Please choose or take another picture!";
     private ProgressBar bar;
+    private SQliteDatabase mDatabase;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,6 +58,9 @@ public class OcrActivity extends AppCompatActivity {
 
         datapath = getFilesDir()+ "/tesseract/";
 
+        //Initialize the database
+        mDatabase = new SQliteDatabase(this);
+
         //initialize Tesseract API
         String lang = "deu";
         mTess = new TessBaseAPI();
@@ -62,6 +69,12 @@ public class OcrActivity extends AppCompatActivity {
         mTess.init(datapath, lang);
         new OcrActivity.ImageProcessing().execute();
 
+    }
+
+    @Override
+    protected void onDestroy() {
+        mDatabase.close();
+        super.onDestroy();
     }
 
     private class ImageProcessing extends AsyncTask<String, Void, String> {
@@ -85,6 +98,15 @@ public class OcrActivity extends AppCompatActivity {
                 OCRTextView.setMovementMethod(new ScrollingMovementMethod());
                 OCRTextView.setText(result);
                 Toast.makeText(getApplicationContext(), "Process successfully ended!", Toast.LENGTH_SHORT).show();
+
+                //Create a bill object from the ocr result
+                StringParser parser = new StringParser(result);
+                Bill bill = parser.parse();
+                //TODO go into new activity/maybe do away with the ocr activity alltogether
+                //TODO get the date and time as a string to pass in an intent for querying the items of this particular purchase
+                String dateTime = bill.getDateAndTime();
+                mDatabase.addBill(bill);
+                Log.d("db", "onPostExecute: database created" + Arrays.toString(mDatabase.getMarketInfoByDate(dateTime)));
             } else {
                 if(MainActivity.instance != null) {
                     MainActivity.instance.finish();
@@ -110,10 +132,7 @@ public class OcrActivity extends AppCompatActivity {
         String OCResult;
         mTess.setImage(image);
         OCResult = mTess.getUTF8Text();
-        StringParser parser = new StringParser(OCResult);
-        Bill bill = parser.parse();
-        // TODO parse OCResult and create a Bill Object and then
-        // return BillObject.toString();
+
         return OCResult;
 
     }

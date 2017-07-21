@@ -140,6 +140,7 @@ public class StringParser {
     }
 
     //TODO maybe use this for other things as well/ add more markets drogerien and such
+    //TODO maybe convert all string to lowercase for more accurate comparison
 
     /**
      * Check the ocr result for similarity to the most common markets, if no close match simply use the
