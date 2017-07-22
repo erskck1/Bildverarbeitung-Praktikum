@@ -89,7 +89,7 @@ public class SQliteDatabase extends SQLiteOpenHelper{
      */
     public List<ShoppingItem> findItemsByPurchaseDate(String dateTime){
         List<ShoppingItem> items = new ArrayList<>();
-        String sql = "SELECT * FROM " + ITEM_TABLE + "WHERE " + COLUMN_DATE_TIME + " = " + dateTime;
+        String sql = "SELECT * FROM " + ITEM_TABLE + " WHERE " + COLUMN_DATE_TIME +  " = \"" + dateTime + "\"";
         SQLiteDatabase db = this.getReadableDatabase();
         //TODO maybe just do a cursor adapter
         Cursor cursor = db.rawQuery(sql, null);
@@ -117,7 +117,7 @@ public class SQliteDatabase extends SQLiteOpenHelper{
     public String [] getMarketInfoByDate(String dateTime){
         //market, adress, city
         String [] data = new String[3];
-        String sql = "SELECT * FROM " + ITEM_TABLE + " LIMIT 1";
+        String sql = "SELECT * FROM " + ITEM_TABLE + " WHERE " + COLUMN_DATE_TIME +  " = \"" + dateTime + "\"" + " LIMIT 1";
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor cursor = db.rawQuery(sql, null);
         if(cursor.moveToFirst()) {

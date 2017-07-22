@@ -7,11 +7,13 @@
         android:layout_height="wrap_content"
         android:id="@+id/product_name"
         android:layout_alignParentLeft="true"
-        android:text="Sample item"/>
+        android:text="Sample item"
+        android:layout_marginLeft="5dp"/>
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/product_price"
         android:layout_alignParentRight="true"
-        android:text="1,99 €"/>
+        android:text="1,99 €"
+        android:layout_marginRight="5dp"/>
 </RelativeLayout>

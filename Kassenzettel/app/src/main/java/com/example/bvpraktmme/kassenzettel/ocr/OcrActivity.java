@@ -23,6 +23,7 @@ import com.example.bvpraktmme.kassenzettel.ExceptionHandler;
 import com.example.bvpraktmme.kassenzettel.MainActivity;
 import com.example.bvpraktmme.kassenzettel.PictureNotAvailableException;
 import com.example.bvpraktmme.kassenzettel.R;
+import com.example.bvpraktmme.kassenzettel.database.PurchaseDisplayActivity;
 import com.example.bvpraktmme.kassenzettel.database.SQliteDatabase;
 import com.example.bvpraktmme.kassenzettel.processing.ProcessingActivity;
 import com.googlecode.tesseract.android.TessBaseAPI;
@@ -107,6 +108,12 @@ public class OcrActivity extends AppCompatActivity {
                 String dateTime = bill.getDateAndTime();
                 mDatabase.addBill(bill);
                 Log.d("db", "onPostExecute: database created" + Arrays.toString(mDatabase.getMarketInfoByDate(dateTime)));
+
+                //Send the dateTime of the bill to the display activity to query database
+
+                Intent displayIntent = new Intent(getApplicationContext(), PurchaseDisplayActivity.class);
+                displayIntent.putExtra("dateTime", dateTime);
+                startActivity(displayIntent);
             } else {
                 if(MainActivity.instance != null) {
                     MainActivity.instance.finish();

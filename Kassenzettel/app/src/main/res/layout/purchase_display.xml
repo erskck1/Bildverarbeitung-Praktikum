@@ -18,16 +18,18 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/adress"/>
+            android:id="@+id/address"/>
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/time_date"/>
     </LinearLayout>
-    <ListView
+    <android.support.v7.widget.RecyclerView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/item_list">
-    </ListView>
+        android:scrollbars="vertical"
+        android:id="@+id/recyclerView">
+
+    </android.support.v7.widget.RecyclerView>
 
 </LinearLayout>
