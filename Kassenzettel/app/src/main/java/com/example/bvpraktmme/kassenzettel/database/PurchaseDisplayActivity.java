@@ -43,6 +43,7 @@ public class PurchaseDisplayActivity extends AppCompatActivity {
         String[] marketInfo = mDatabase.getMarketInfoByDate(dateTime);
 
         //set the appropriate views to it
+        //TODO something here is null, why?
         TextView market = (TextView) findViewById(R.id.market);
         market.setText(marketInfo[0]);
 

@@ -18,6 +18,5 @@ public class ItemViewHolder extends RecyclerView.ViewHolder{
         super(itemView);
         itemName = (TextView) itemView.findViewById(R.id.product_name);
         itemPrice = (TextView) itemView.findViewById(R.id.product_price);
-
     }
 }

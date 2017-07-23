@@ -10,6 +10,8 @@ import android.widget.TextView;
 import com.example.bvpraktmme.kassenzettel.R;
 import com.example.bvpraktmme.kassenzettel.ocr.ShoppingItem;
 
+import java.math.BigDecimal;
+import java.text.DecimalFormat;
 import java.util.List;
 
 /**
@@ -39,7 +41,8 @@ public class RecyclerAdapter extends RecyclerView.Adapter<ItemViewHolder> {
     @Override
     public void onBindViewHolder(ItemViewHolder holder, int position) {
         final ShoppingItem item = items.get(position);
-        holder.itemPrice.setText(String.valueOf(item.getPrice()));
+
+        holder.itemPrice.setText(String.valueOf(new DecimalFormat("#.##").format(item.getPrice())));
         holder.itemName.setText(item.getProduct());
 
     }
