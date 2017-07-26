@@ -42,7 +42,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<ItemViewHolder> {
     public void onBindViewHolder(ItemViewHolder holder, int position) {
         final ShoppingItem item = items.get(position);
 
-        holder.itemPrice.setText(String.valueOf(new DecimalFormat("#.##").format(item.getPrice())));
+        holder.itemPrice.setText(String.valueOf(new DecimalFormat("#.##").format(item.getPrice())) + " €");
         holder.itemName.setText(item.getProduct());
 
     }
