@@ -135,7 +135,7 @@ public class ObjectRecognizer {
         Imgproc.Canny(convertedImage, canny, 50, 200);
         //Set the parameters for which lines to detect
 
-        double minLineLength = convertedImage.size().width*0.60;
+        double minLineLength = convertedImage.size().width*0.65;
 
         Imgproc.HoughLinesP(canny, lines,1, Math.PI/180,50,minLineLength,23);
 
@@ -157,8 +157,6 @@ public class ObjectRecognizer {
     }
 
     private double findFirstDoubleLine(Mat lines, double imageSize){
-        ArrayList<Double> yCoords = new ArrayList<>();
-
         List <Double> sortedY = new ArrayList<Double>();
         for(int i = 0; i< lines.rows()-1; i++) {
             double[] vec = lines.get(i, 0);
@@ -173,19 +171,16 @@ public class ObjectRecognizer {
         }
 
         Collections.sort(sortedY);
-        for (int i = 0; i < sortedY.size()-1; i++) {
 
+        for(int i = 0; i< sortedY.size(); i++) {
             double y1 = sortedY.get(i);
-            double y2 = sortedY.get(i+1);
-
-            if(Math.abs(y1 - y2) < 200 && Math.abs(y1 - y2) > 0){
-                yCoords.add(Math.max(y1, y2));
+            for(int j = 0; j < sortedY.size(); j++) {
+                double y2 = sortedY.get(j);
+                if(Math.abs(y1 - y2) < 150 && Math.abs(y1 - y2) > 50) {
+                    return Math.max(y1, y2);
+                }
             }
         }
-
-        if(yCoords.size() == 0 ) { // TODO Michael Ersoy
-            return imageSize*0.7;
-        }
-        return Collections.min(yCoords);
+        return imageSize*0.7;
     }
 }
