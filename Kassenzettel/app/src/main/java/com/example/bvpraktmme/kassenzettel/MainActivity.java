@@ -101,7 +101,7 @@ public class MainActivity extends AppCompatActivity {
             if (requestCode == SELECT_FILE)
                 onSelectFromGalleryResult(data);
             else if (requestCode == REQUEST_CAMERA) {
-                //onCaptureImageResult(data); // TODO Michael
+                //onCaptureImageResult(data);
             }
 
         }

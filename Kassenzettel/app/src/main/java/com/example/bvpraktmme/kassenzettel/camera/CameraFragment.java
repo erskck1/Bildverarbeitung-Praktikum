@@ -836,7 +836,7 @@ public class CameraFragment extends Fragment
                                                @NonNull TotalCaptureResult result) {
                     unlockFocus();
                     //showToast("Saved: " + mFile);
-                        //TODO comment back in to work with the processing activity
+                    // comment back in to work with the processing activity
                     Log.d(TAG, mFile.toString());
 
                     Uri uri;

@@ -104,7 +104,6 @@ public class OcrActivity extends AppCompatActivity {
                 StringParser parser = new StringParser(result);
                 Bill bill = parser.parse();
                 //TODO go into new activity/maybe do away with the ocr activity alltogether
-                //TODO get the date and time as a string to pass in an intent for querying the items of this particular purchase
                 String dateTime = bill.getDateAndTime();
                 mDatabase.addBill(bill);
                 Log.d("db", "onPostExecute: database created" + Arrays.toString(mDatabase.getMarketInfoByDate(dateTime)));

@@ -22,7 +22,6 @@ public class RecyclerAdapter extends RecyclerView.Adapter<ItemViewHolder> {
 
     private Context context;
     private List<ShoppingItem> items;
-    //TODO not neede probably
     private SQliteDatabase mDatabase;
 
     public RecyclerAdapter(Context context, List<ShoppingItem> items){

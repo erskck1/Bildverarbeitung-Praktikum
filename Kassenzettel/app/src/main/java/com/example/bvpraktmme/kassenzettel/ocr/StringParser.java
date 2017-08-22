@@ -17,15 +17,17 @@ public class StringParser {
     Bill bill;
     String [] resultList;
     //Predefined markets maybe do this in another way? or simply add mor names to this
-    String [] markets = {"Aldi", "Coop", "Edeka", "Marktkauf", "E Center", "Netto", "SPAR", "NP-Markt",
+    String [] markets = {"Aldi", "Coop", "Edeka", "E-Center", "Marktkauf", "E Center", "Netto", "SPAR", "NP-Markt",
             "Famila", "K+K", "Metro", "Real", "Netto", "Norma", "REWE", "Penny", "Kaufland", "Lidl"};
+
+    //TODO write base parsing functions and adapt them to the difference between the markets
+
 
     public StringParser(String ocrResult){
         this.ocrResult = ocrResult;
         bill = new Bill();
     }
 
-    //TODO what to do when price/kg is none, simply set none? handle on databse entry
     public Bill parse(){
         resultList = ocrResult.split("\n");
         ArrayList<String> ppResult = new ArrayList<>();
@@ -61,7 +63,6 @@ public class StringParser {
             if(ppResult.get(i).isEmpty())
                 continue;
             String [] split = ppResult.get(i).split(" ");
-            //TODO add recongized sum? or simply calculate from items
             for (int j = 0; j < split.length; j++) {
                 double sim = nGram.similarity(split[j], "SUMME");
                 if ( sim > 0.5)
@@ -139,7 +140,6 @@ public class StringParser {
 
     }
 
-    //TODO maybe use this for other things as well/ add more markets drogerien and such
     //TODO maybe convert all string to lowercase for more accurate comparison
 
     /**

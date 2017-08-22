@@ -35,10 +35,9 @@ public class SQliteDatabase extends SQLiteOpenHelper{
     private static final String COLUMN_PPK = "priceperkg";
 
     public SQliteDatabase(Context context) {
-        //TODO cursor factory?
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
     }
-    //TODO remove id?
+    //TODO change dateTIme to Number for easier comparison
     @Override
     public void onCreate(SQLiteDatabase db) {
         //create the table with columns of fitting type
@@ -67,7 +66,6 @@ public class SQliteDatabase extends SQLiteOpenHelper{
             values.put(COLUMN_ITEM_NAME, item.getProduct());
             values.put(COLUMN_PRICE, item.getPrice());
             values.put(COLUMN_DATE_TIME, bill.getDateAndTime());
-            //TODO is this right?
             values.put(COLUMN_MARKET, bill.getMarket());
             values.put(COLUMN_LOCATION, bill.getCity());
 
@@ -79,8 +77,6 @@ public class SQliteDatabase extends SQLiteOpenHelper{
     }
 
     //TODO write query methods for finding all products (either for a date and time or for a market or for any and all such queries
-    //TODO  maybe do something with an id? not sure if póssible
-    //TODO make this nicer maybe change object structure?
 
     /**
      * Returns a list of all items in the database that were entered at a certain time
@@ -91,7 +87,6 @@ public class SQliteDatabase extends SQLiteOpenHelper{
         List<ShoppingItem> items = new ArrayList<>();
         String sql = "SELECT * FROM " + ITEM_TABLE + " WHERE " + COLUMN_DATE_TIME +  " = \"" + dateTime + "\"";
         SQLiteDatabase db = this.getReadableDatabase();
-        //TODO maybe just do a cursor adapter
         Cursor cursor = db.rawQuery(sql, null);
         if(cursor.moveToFirst()){
             do{
@@ -110,6 +105,33 @@ public class SQliteDatabase extends SQLiteOpenHelper{
     }
 
     /**
+     * Finds all Product in the database that have been purchased from a certain market
+     * @param market
+     * @return
+     */
+    public List<ShoppingItem> findItemsByMarket(String market){
+        List<ShoppingItem> items = new ArrayList<>();
+        String sql = "SELECT * FROM " + ITEM_TABLE + " WHERE " + COLUMN_MARKET + " = \"" + market + "\"";
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.rawQuery(sql, null);
+        if(cursor.moveToFirst()){
+            do{
+                String name = cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_ITEM_NAME));
+                float price = cursor.getFloat(cursor.getColumnIndexOrThrow(COLUMN_PRICE));
+                float ppk = cursor.getFloat(cursor.getColumnIndexOrThrow(COLUMN_PPK));
+                float weight = cursor.getFloat(cursor.getColumnIndexOrThrow(COLUMN_WEIGHT));
+                ShoppingItem item = new ShoppingItem(name, price, weight, ppk);
+                items.add(item);
+            }
+            while(cursor.moveToNext());
+        }
+        cursor.close();
+
+        return items;
+
+    }
+
+    /**
      * Returns the metadata info such as market name adress and such for a given time
      * @param dateTime
      * @return
@@ -120,6 +142,7 @@ public class SQliteDatabase extends SQLiteOpenHelper{
         String sql = "SELECT * FROM " + ITEM_TABLE + " WHERE " + COLUMN_DATE_TIME +  " = \"" + dateTime + "\"" + " LIMIT 1";
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor cursor = db.rawQuery(sql, null);
+        //TODO some of these columns are null or thrown, why?
         if(cursor.moveToFirst()) {
             data[0] = cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_MARKET));
             data[1] = cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_ADDRESS));
