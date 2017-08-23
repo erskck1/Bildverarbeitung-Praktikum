@@ -24,6 +24,11 @@ public class ExceptionHandler implements Thread.UncaughtExceptionHandler {
         handleException(EXCEPTION_MESSAGE, activity);
     }
 
+    /**
+     * Method to handle Exceptions globally and to show a Toast popup
+     * @param message Exception message to show on Toast popup
+     * @param activity the activity, which the exception occurred
+     */
     public static void handleException (final String message,final Activity activity) {
         new Thread() {
             @Override

@@ -14,10 +14,6 @@ import java.math.BigDecimal;
 import java.text.DecimalFormat;
 import java.util.List;
 
-/**
- * Created by Michael Graf on 21.07.2017.
- */
-
 public class RecyclerAdapter extends RecyclerView.Adapter<ItemViewHolder> {
 
     private Context context;

@@ -13,10 +13,6 @@ import com.example.bvpraktmme.kassenzettel.ocr.ShoppingItem;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Created by Michael Graf on 17.07.2017.
- */
-
 public class SQliteDatabase extends SQLiteOpenHelper{
     private static final int DATABASE_VERSION = 1;
 

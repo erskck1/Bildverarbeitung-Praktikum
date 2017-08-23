@@ -6,10 +6,6 @@ import android.widget.TextView;
 
 import com.example.bvpraktmme.kassenzettel.R;
 
-/**
- * Created by Michael Graf on 21.07.2017.
- */
-
 public class ItemViewHolder extends RecyclerView.ViewHolder{
     public TextView itemName;
     public TextView itemPrice;

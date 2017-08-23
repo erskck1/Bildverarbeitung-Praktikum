@@ -33,6 +33,13 @@ public class ObjectRecognizer {
         this.image = image;
     }
 
+
+    /**
+     * Method to apply filters for finding the Bill in picture.
+     * The Method includes blob detection and rotation processes.
+     * @throws exception if the picture is not available.
+     * @return founded and rotated Bill
+     */
     public Bitmap applyFilters() throws PictureNotAvailableException{
 
         convertedImage = FilterUtils.getMatBy(image);
@@ -101,7 +108,6 @@ public class ObjectRecognizer {
             size.width = temp;
         }
 
-        // to show in presentation
         Mat transform = Imgproc.getRotationMatrix2D(biggestRect.center, angle, 1.0);
         Mat rotated = new Mat();
         Imgproc.warpAffine(convertedImage2, rotated, transform, convertedImage2.size(), Imgproc.INTER_CUBIC);
@@ -118,7 +124,8 @@ public class ObjectRecognizer {
 
     /**
      * Method to find and cut out the area of the bill where items and prices area displayed
-     * @return
+     * The Method uses lines in the picture to find products area.
+     * @return products area as Bitmap
      */
     public Bitmap findPriceArea(){
         //Transform the image into a mat
@@ -156,6 +163,11 @@ public class ObjectRecognizer {
         return bm;
     }
 
+
+    /**
+     * Method to find Summe area in picture between two lines .
+     * @return y axis of founded line.
+     */
     private double findFirstDoubleLine(Mat lines, double imageSize){
         List <Double> sortedY = new ArrayList<Double>();
         for(int i = 0; i< lines.rows()-1; i++) {
