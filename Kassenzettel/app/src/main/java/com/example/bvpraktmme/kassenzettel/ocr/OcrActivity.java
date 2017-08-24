@@ -95,24 +95,32 @@ public class OcrActivity extends AppCompatActivity {
         @Override
         protected void onPostExecute(String result) {
             if(!result.equals("notexecuted") && result !=null) {
-                TextView OCRTextView = (TextView) findViewById(R.id.OCRTextView);
-                OCRTextView.setMovementMethod(new ScrollingMovementMethod());
-                OCRTextView.setText(result);
-                Toast.makeText(getApplicationContext(), "Process successfully ended!", Toast.LENGTH_SHORT).show();
 
-                //Create a bill object from the ocr result
-                StringParser parser = new StringParser(result);
-                Bill bill = parser.parse();
-                //TODO go into new activity/maybe do away with the ocr activity alltogether
-                String dateTime = bill.getDateAndTime();
-                mDatabase.addBill(bill);
-                Log.d("db", "onPostExecute: database created" + Arrays.toString(mDatabase.getMarketInfoByDate(dateTime)));
 
-                //Send the dateTime of the bill to the display activity to query database
+                try{
+                    //Create a bill object from the ocr result
+                    StringParser parser = new StringParser(result);
+                    Bill bill = parser.parse();
+                    String dateTime = bill.getDateAndTime();
+                    mDatabase.addBill(bill);
+                    Log.d("db", "onPostExecute: database created" + Arrays.toString(mDatabase.getMarketInfoByDate(dateTime)));
 
-                Intent displayIntent = new Intent(getApplicationContext(), PurchaseDisplayActivity.class);
-                displayIntent.putExtra("dateTime", dateTime);
-                startActivity(displayIntent);
+                    //Send the dateTime of the bill to the display activity to query database
+
+                    Intent displayIntent = new Intent(getApplicationContext(), PurchaseDisplayActivity.class);
+                    displayIntent.putExtra("dateTime", dateTime);
+                    startActivity(displayIntent);
+                    Toast.makeText(getApplicationContext(), "Exception while parsing, displaying result", Toast.LENGTH_SHORT).show();
+                }
+                catch(Exception e){
+                    Log.e("parsingException", e.toString());
+                    TextView OCRTextView = (TextView) findViewById(R.id.OCRTextView);
+                    OCRTextView.setMovementMethod(new ScrollingMovementMethod());
+                    OCRTextView.setText(result);
+                    Toast.makeText(getApplicationContext(), "Process successfully ended!", Toast.LENGTH_SHORT).show();
+                }
+
+
             } else {
                 if(MainActivity.instance != null) {
                     MainActivity.instance.finish();

@@ -33,7 +33,7 @@ public class SQliteDatabase extends SQLiteOpenHelper{
     public SQliteDatabase(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
     }
-    //TODO change dateTIme to Number for easier comparison
+
     @Override
     public void onCreate(SQLiteDatabase db) {
         //create the table with columns of fitting type
@@ -71,8 +71,7 @@ public class SQliteDatabase extends SQLiteOpenHelper{
         }
 
     }
-
-    //TODO write query methods for finding all products (either for a date and time or for a market or for any and all such queries
+    
 
     /**
      * Returns a list of all items in the database that were entered at a certain time

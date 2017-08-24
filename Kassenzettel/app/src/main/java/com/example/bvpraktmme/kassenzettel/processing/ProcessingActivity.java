@@ -89,6 +89,7 @@ public class ProcessingActivity extends AppCompatActivity {
             });
         // to show selected convertedImage
         ImageView imageView = (ImageView) findViewById(R.id.display_image);
+        Log.d("Camera2B", imageUri.toString());
         Glide.with(this).loadFromMediaStore(imageUri).into(imageView);
 
     }
