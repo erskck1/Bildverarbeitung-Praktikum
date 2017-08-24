@@ -23,7 +23,6 @@ import com.bumptech.glide.Glide;
 import com.example.bvpraktmme.kassenzettel.ExceptionHandler;
 import com.example.bvpraktmme.kassenzettel.MainActivity;
 import com.example.bvpraktmme.kassenzettel.PictureNotAvailableException;
-import com.example.bvpraktmme.kassenzettel.camera.CameraFragment;
 import com.example.bvpraktmme.kassenzettel.ocr.OcrActivity;
 import com.example.bvpraktmme.kassenzettel.R;
 import com.example.bvpraktmme.kassenzettel.opencv.ObjectRecognizer;
@@ -70,8 +69,8 @@ public class ProcessingActivity extends AppCompatActivity {
         }
 
         // find selected convertedImage
-        if (extras != null && extras.containsKey(CameraFragment.IMAGE_URI)) {
-            imageUri = Uri.parse(extras.getString(CameraFragment.IMAGE_URI));
+        if (extras != null && extras.containsKey(MainActivity.IMAGE_URI)) {
+            imageUri = Uri.parse(extras.getString(MainActivity.IMAGE_URI));
         }
 
         // if permissions are not activated, don't show the process button

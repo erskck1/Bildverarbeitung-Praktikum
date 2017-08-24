@@ -1,28 +1,28 @@
 package com.example.bvpraktmme.kassenzettel;
 
 import android.app.Activity;
+import android.content.ContentValues;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
-
-import com.example.bvpraktmme.kassenzettel.camera.CameraActivity;
-import com.example.bvpraktmme.kassenzettel.camera.CameraFragment;
 import com.example.bvpraktmme.kassenzettel.processing.ProcessingActivity;
-
-import org.opencv.android.OpenCVLoader;
+import java.util.Random;
 
 public class MainActivity extends AppCompatActivity {
 
     public static MainActivity instance;
-    private static final String TAG = "MainActivity";
-
-    private int REQUEST_CAMERA = 0, SELECT_FILE = 1;
+    private Random random = new Random(14343442l);
+    private static final int CAMERA_REQUEST = 1888;
+    private int SELECT_FILE = 1;
+    private Uri imageUri;
+    public static String IMAGE_URI = "image_uri_key";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,9 +43,14 @@ public class MainActivity extends AppCompatActivity {
         takePictureButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent takePictureIntent = new Intent(getApplicationContext(), CameraActivity.class);
-                startActivity(takePictureIntent);
-
+                ContentValues values = new ContentValues();
+                values.put(MediaStore.Images.Media.TITLE, "Kassenzettel"+ random.nextInt());
+                values.put(MediaStore.Images.Media.DESCRIPTION, "From your Camera");
+                imageUri = getApplicationContext().getContentResolver().insert(
+                        MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values);
+                Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+                intent.putExtra(MediaStore.EXTRA_OUTPUT, imageUri);
+                startActivityForResult(intent, CAMERA_REQUEST);
             }
         });
 
@@ -80,8 +85,14 @@ public class MainActivity extends AppCompatActivity {
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.take_picture) {
-            Intent takePictureIntent = new Intent(getApplicationContext(), CameraActivity.class);
-            startActivity(takePictureIntent);
+            ContentValues values = new ContentValues();
+            values.put(MediaStore.Images.Media.TITLE, "Kassenzettel"+ random.nextInt());
+            values.put(MediaStore.Images.Media.DESCRIPTION, "From your Camera");
+            imageUri = getApplicationContext().getContentResolver().insert(
+                    MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values);
+            Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+            intent.putExtra(MediaStore.EXTRA_OUTPUT, imageUri);
+            startActivityForResult(intent, CAMERA_REQUEST);
         }
         if(id == R.id.select_gallery){
             Intent intent = new Intent();
@@ -100,8 +111,11 @@ public class MainActivity extends AppCompatActivity {
         if (resultCode == Activity.RESULT_OK ) {
             if (requestCode == SELECT_FILE)
                 onSelectFromGalleryResult(data);
-            else if (requestCode == REQUEST_CAMERA) {
-                //onCaptureImageResult(data);
+            else if (requestCode == CAMERA_REQUEST && resultCode == Activity.RESULT_OK) {
+                Intent intent = new Intent(getApplicationContext(), ProcessingActivity.class);
+                intent.putExtra(IMAGE_URI, imageUri.toString());
+                startActivity(intent);
+
             }
 
         }
@@ -109,7 +123,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void onSelectFromGalleryResult(Intent data) {
         Intent intent = new Intent(getApplicationContext(), ProcessingActivity.class);
-        intent.putExtra(CameraFragment.IMAGE_URI, data.getData().toString());
+        intent.putExtra(IMAGE_URI, data.getData().toString());
         startActivity(intent);
     }
 
